@@ -1,6 +1,22 @@
-@TravelPlannerApi_HostAddress = http://localhost:5094
+@TravelPlannerApi_HostAddress = http://localhost:4002/api
 
-GET {{TravelPlannerApi_HostAddress}}/weatherforecast/
+POST {{TravelPlannerApi_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+    "username": "string",
+    "password": "string"
+}
+
+###
+
+POST {{TravelPlannerApi_HostAddress}}/auth/refresh
+Cookie: RefreshToken=00a319dc-f0b5-4c2e-aa78-d0d6a4354ac8
+
+###
+
+GET {{TravelPlannerApi_HostAddress}}/values
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsIm5iZiI6MTcyNzU0NjY0NSwiZXhwIjoxNzI3NTUwMjQ1LCJpYXQiOjE3Mjc1NDY2NDUsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMSJ9.S3kb1iIUFLKl0wI8nin7PaEl3m534k-vyHG7NUfUMRg
 
 ###

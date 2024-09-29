@@ -23,9 +23,9 @@ public class UserService
     }
 
 
-    public async Task RegisterUserAsync(string username, string password)
+    public async Task RegisterUserAsync(string email, string password)
     {
-        var existingUser = await _userRepository.GetWhereAsync(user => user.Username == username);
+        var existingUser = await _userRepository.GetWhereAsync(user => user.Email == email);
         if (existingUser.Any())
         {
             throw new Exception("User already exists");
@@ -36,7 +36,7 @@ public class UserService
         var user = new User
         {
             Id = Guid.NewGuid().ToString("N"),
-            Username = username,
+            Email = email,
             PasswordHash = passwordHash,
             Salt = salt,
         };
@@ -44,9 +44,9 @@ public class UserService
         await _userRepository.CreateAsync(user);
     }
 
-    public async Task<AuthTokens?> AuthenticateUserAsync(string username, string password)
+    public async Task<AuthTokens?> AuthenticateUserAsync(string email, string password)
     {
-        var users = await _userRepository.GetWhereAsync(user => user.Username == username);
+        var users = await _userRepository.GetWhereAsync(user => user.Email == email);
         var user = users.FirstOrDefault();
 
         if (user == null || !VerifyPassword(password, user.PasswordHash, user.Salt))
@@ -62,7 +62,7 @@ public class UserService
             throw new Exception("Failed to save token info");
         }
 
-        var accessToken = GenerateAccessToken(user.Username);
+        var accessToken = GenerateAccessToken(user);
 
         return new AuthTokens(accessToken, refreshToken);
     }
@@ -94,13 +94,13 @@ public class UserService
             throw new Exception("Failed to save token info");
         }
 
-        var accessToken = GenerateAccessToken(user.Username);
+        var accessToken = GenerateAccessToken(user);
 
         return new AuthTokens(accessToken, newRefreshToken);
     }
 
 
-    private string GenerateAccessToken(string username)
+    private string GenerateAccessToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_authSettings.SecretKey);
@@ -108,7 +108,11 @@ public class UserService
         {
             Issuer = _authSettings.ValidIssuer,
             Audience = _authSettings.ValidAudience,
-            Subject = new ClaimsIdentity([new Claim(ClaimTypes.Name, username)]),
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+            }),
             Expires = DateTime.UtcNow.Add(_authSettings.AccessTokenExpiration),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

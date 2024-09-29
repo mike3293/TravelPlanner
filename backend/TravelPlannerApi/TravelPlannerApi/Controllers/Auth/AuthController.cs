@@ -20,13 +20,21 @@ public class AuthController : ControllerBase
 
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterModel model)
+    public async Task<ActionResult<string>> Register([FromBody] RegisterModel model)
     {
         try
         {
-            await _userService.RegisterUserAsync(model.Username, model.Password);
+            await _userService.RegisterUserAsync(model.Email, model.Password);
 
-            return Ok();
+            var tokens = await _userService.AuthenticateUserAsync(model.Email, model.Password);
+            if (tokens is null)
+            {
+                return Unauthorized();
+            }
+
+            AddRefreshTokenCookie(tokens);
+
+            return tokens.AccessToken;
         }
         catch (Exception ex)
         {
@@ -39,7 +47,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var tokens = await _userService.AuthenticateUserAsync(model.Username, model.Password);
+            var tokens = await _userService.AuthenticateUserAsync(model.Email, model.Password);
             if (tokens is null)
             {
                 return Unauthorized();

@@ -1,5 +1,7 @@
-﻿namespace TravelPlannerApi.Services.Auth;
+﻿using TravelPlannerApi.Domain;
+
+namespace TravelPlannerApi.Services.Auth;
 
 public record AuthTokens(
     string AccessToken,
-    string RefreshToken);
+    RefreshToken RefreshToken);

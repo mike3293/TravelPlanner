@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TravelPlannerApi.Models.Auth;
 using TravelPlannerApi.Services.Auth;
-using Microsoft.Extensions.Options;
-using TravelPlannerApi.Configuration;
 
 namespace TravelPlannerApi.Controllers.Auth;
 
@@ -13,13 +11,11 @@ public class AuthController : ControllerBase
     private const string RefreshTokenCookie = "RefreshToken";
 
     private readonly UserService _userService;
-    private readonly AuthSettings _authSettings;
 
 
-    public AuthController(UserService userService, IOptions<AuthSettings> authSettings)
+    public AuthController(UserService userService)
     {
         _userService = userService;
-        _authSettings = authSettings.Value;
     }
 
 
@@ -93,9 +89,9 @@ public class AuthController : ControllerBase
         {
             HttpOnly = true,
             Secure = true,
-            Expires = DateTime.UtcNow.Add(_authSettings.RefreshTokenExpiration),
+            Expires = tokens.RefreshToken.ExpirationDate,
         };
 
-        Response.Cookies.Append(RefreshTokenCookie, tokens.RefreshToken, cookieOptions);
+        Response.Cookies.Append(RefreshTokenCookie, tokens.RefreshToken.Token, cookieOptions);
     }
 }

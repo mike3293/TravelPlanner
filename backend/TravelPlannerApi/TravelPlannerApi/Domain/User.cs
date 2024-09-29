@@ -10,5 +10,5 @@ public class User
 
     public required string Salt { get; set; }
 
-    public List<string> RefreshTokens { get; set; } = [];
+    public List<RefreshToken> RefreshTokens { get; set; } = [];
 }

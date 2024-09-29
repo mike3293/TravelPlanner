@@ -69,15 +69,22 @@ public class UserService
 
     public async Task<AuthTokens?> RefreshTokenAsync(string refreshToken)
     {
-        var users = await _userRepository.GetWhereAsync(user => user.RefreshTokens.Contains(refreshToken));
+        var users = await _userRepository.GetWhereAsync(user => user.RefreshTokens.Any(t => t.Token == refreshToken));
         var user = users.FirstOrDefault();
-
         if (user == null)
         {
             return null;
         }
 
-        user.RefreshTokens.Remove(refreshToken);
+        // Token expiration check
+        CleanExpiredRefreshTokens(user);
+        var existingRefreshToken = user.RefreshTokens.FirstOrDefault(t => t.Token == refreshToken);
+        if(existingRefreshToken is null)
+        {
+            return null;
+        }
+
+        user.RefreshTokens.Remove(existingRefreshToken);
 
         var newRefreshToken = GenerateRefreshToken();
         user.RefreshTokens.Add(newRefreshToken);
@@ -110,9 +117,14 @@ public class UserService
         return tokenHandler.WriteToken(token);
     }
 
-    private string GenerateRefreshToken()
+    private RefreshToken GenerateRefreshToken()
     {
-        return Guid.NewGuid().ToString();
+        return new RefreshToken { ExpirationDate = DateTime.UtcNow.Add(_authSettings.RefreshTokenExpiration) };
+    }
+
+    private void CleanExpiredRefreshTokens(User user)
+    {
+        user.RefreshTokens.RemoveAll(t => t.ExpirationDate < DateTime.UtcNow);
     }
 
     private string GenerateSalt()

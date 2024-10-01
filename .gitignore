@@ -2,6 +2,7 @@
 **/bin
 **/dist
 **/publish_output
+utils/images
 
 # Test outputs
 **/pact-logs

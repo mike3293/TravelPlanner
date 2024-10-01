@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import styles from './App.module.scss';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
 
-function App() {
-  return (
-    <div className={styles.App}>
-      <header className={styles['App-header']}>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { links } from './links';
+import { theme } from './config/theme/theme';
+import { Planner } from './components/pages/planner';
+import { Register, LogIn } from './components/pages/auth';
+
+
+export function App() {
+    return (
+        <>
+            <ThemeProvider theme={theme}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path={links.home} element={<Planner />} />
+                        <Route path={links.register} element={<Register />} />
+                        <Route path={links.login} element={<LogIn />} />
+                    </Routes>
+                </BrowserRouter>
+            </ThemeProvider>
+            <ToastContainer />
+        </>
+    );
 }
-
-export default App;

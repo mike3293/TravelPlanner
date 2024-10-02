@@ -1,0 +1,3 @@
+docker build . -t travel-planner-api -f TravelPlannerApi/Dockerfile
+
+docker run -td --name travel-planner-api -p 4002:8080 --env ASPNETCORE_ENVIRONMENT=Development travel-planner-api

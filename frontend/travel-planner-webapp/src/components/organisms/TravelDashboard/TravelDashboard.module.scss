@@ -5,6 +5,10 @@
     position: relative;
 }
 
+.leftPane {
+    overflow: hidden;
+}
+
 .transition {
     transition: width 0.5s ease;
 }

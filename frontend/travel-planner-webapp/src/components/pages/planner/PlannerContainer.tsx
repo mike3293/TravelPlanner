@@ -1,10 +1,13 @@
+import { Outlet } from 'react-router-dom';
 import { RedirectUnauthorized } from 'src/components/atoms/RedirectUnauthorized';
 import { TravelDashboard } from 'src/components/organisms/TravelDashboard';
 
-export function Planner() {
+export function PlannerContainer() {
     return (
         <RedirectUnauthorized>
-            <TravelDashboard />
+            <TravelDashboard>
+                <Outlet />
+            </TravelDashboard>
         </RedirectUnauthorized>
     );
 };

@@ -1,5 +1,4 @@
 import { Container, Box, Typography, TextField, Alert, Button } from '@mui/material';
-import { error } from 'console';
 import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateEmail, validatePassword } from './utils';

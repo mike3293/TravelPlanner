@@ -1,17 +1,16 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, PropsWithChildren } from 'react';
 import classNames from 'classnames';
 import { IconButton } from '@mui/material';
 import debounce from 'lodash/debounce';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { TravelMap } from 'src/components/moleculas/TravelMap';
-import { TravelPlanner } from 'src/components/moleculas/TravelPlanner';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 
 import 'leaflet/dist/leaflet.css';
 import styles from './TravelDashboard.module.scss';
 
 
-export const TravelDashboard: React.FC = () => {
+export function TravelDashboard({ children }: PropsWithChildren) {
     const [leftPaneWidth, setLeftPaneWidth] = useState(1200);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -75,8 +74,8 @@ export const TravelDashboard: React.FC = () => {
 
     return (
         <div className={styles.container} ref={containerRef}>
-            <div className={classNames(!isDragging && styles.transition)} style={{ width: `${leftPaneWidth}px` }}>
-                <TravelPlanner />
+            <div className={classNames(styles.leftPane, !isDragging && styles.transition)} style={{ width: `${leftPaneWidth}px` }}>
+                {children}
             </div>
             <div className={styles.separator} onMouseDown={handleMouseDown}>
                 <IconButton

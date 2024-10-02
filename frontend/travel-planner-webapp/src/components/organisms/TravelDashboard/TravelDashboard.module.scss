@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.transition {
+    transition: width 0.5s ease;
+}
+
+.separator {
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--mui-palette-primary-light);
+    cursor: col-resize;
+    transition: background-color 0.3s ease;
+    user-select: none;
+
+    &:hover {
+        background-color: var(--mui-palette-primary-main);
+    }
+
+    &:active {
+        background-color: var(--mui-palette-primary-dark);
+    }
+}

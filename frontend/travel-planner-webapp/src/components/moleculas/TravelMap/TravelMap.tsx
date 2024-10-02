@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import {
     MapContainer,
     Marker,
@@ -14,13 +14,13 @@ const LocationMarker = ({ addLocation }: { addLocation: (latlng: LatLng) => void
     useMapEvents({
         click(event: any) {
             addLocation(event.latlng);
-        },
+        }
     });
 
     return null;
 };
 
-export function TravelMap() {
+function TravelMapInner(_: any, ref: React.Ref<L.Map>) {
     const [locations, setLocations] = useState<{ name: string; lat: number; lng: number }[]>([]);
 
     const handleAddLocation = (latlng: LatLng) => {
@@ -30,7 +30,7 @@ export function TravelMap() {
     };
 
     return (
-        <MapContainer center={[35.6586, 139.7454]} zoom={5} style={{ height: '500px', width: '1000px' }}>
+        <MapContainer ref={ref} center={[35.6586, 139.7454]} zoom={5} style={{ height: '100%', width: '100%' }}>
             <VectorTileLayer
                 styleUrl={constants.VECTOR_MAP_STYLE_URL}
                 attribution={constants.VECTOR_MAP_ATTRIBUTION}
@@ -42,3 +42,6 @@ export function TravelMap() {
         </MapContainer>
     );
 };
+
+const TravelMap = forwardRef(TravelMapInner);
+export { TravelMap };

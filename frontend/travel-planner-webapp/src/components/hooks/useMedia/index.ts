@@ -1,7 +1,7 @@
-import { Theme, useMediaQuery, UseMediaQueryOptions } from "@mui/material";
+import { Theme, useMediaQuery, UseMediaQueryOptions } from '@mui/material';
 
 export const useSmallMobile = (options?: UseMediaQueryOptions) =>
-    useMediaQuery<Theme>((theme) => theme.breakpoints.down("xs"), options);
+    useMediaQuery<Theme>((theme) => theme.breakpoints.down('xs'), options);
 
 export const useMobile = (options?: UseMediaQueryOptions) =>
-    useMediaQuery<Theme>((theme) => theme.breakpoints.down("sm"), options);
+    useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'), options);

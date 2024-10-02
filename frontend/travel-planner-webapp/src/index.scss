@@ -3,25 +3,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 
 body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+    background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #cacaca;
+    background: #cacaca;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #b3b3b3;
+    background: #b3b3b3;
 }
 
 .leaflet-attribution-flag {
     display: none !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: initial !important;
+    -webkit-text-fill-color: #000 !important;
 }

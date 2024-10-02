@@ -1,17 +1,18 @@
 import { createTheme } from '@mui/material/styles';
-import { blueGrey, teal, amber } from '@mui/material/colors';
+import { indigo, teal, blueGrey } from '@mui/material/colors';
 
 export const theme = createTheme({
+    cssVariables: true,
     palette: {
         primary: {
-            main: teal[500],
-            light: teal[300],
-            dark: teal[700],
+            main: indigo[200],  // Primary color set to indigo[200]
+            light: indigo[100], // Lighter shade of primary
+            dark: indigo[300],  // Darker shade of primary
         },
         secondary: {
-            main: amber[500],
-            light: amber[300],
-            dark: amber[700],
+            main: teal[200],    // Secondary color set to teal[200]
+            light: teal[100],   // Lighter shade of secondary
+            dark: teal[300],    // Darker shade of secondary
         },
         background: {
             default: blueGrey[900],
@@ -42,16 +43,18 @@ export const theme = createTheme({
                     fontSize: 16,
                 },
                 containedPrimary: {
-                    backgroundColor: teal[600],
+                    backgroundColor: indigo[300],  // Darker shade of primary for better contrast
                     '&:hover': {
-                        backgroundColor: teal[800],
+                        backgroundColor: indigo[400], // Darker shade on hover
                     },
+                    color: '#fff',  // Ensure text is readable on dark background
                 },
                 containedSecondary: {
-                    backgroundColor: amber[600],
+                    backgroundColor: teal[300],    // Darker shade of secondary for better contrast
                     '&:hover': {
-                        backgroundColor: amber[800],
+                        backgroundColor: teal[400],  // Darker shade on hover
                     },
+                    color: '#fff',  // Ensure text is readable on dark background
                 },
             },
         },

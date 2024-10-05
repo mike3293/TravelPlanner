@@ -75,7 +75,9 @@ export function TravelDashboard({ children }: PropsWithChildren) {
     return (
         <div className={styles.container} ref={containerRef}>
             <div className={classNames(styles.leftPane, !isDragging && styles.transition)} style={{ width: `${leftPaneWidth}px` }}>
-                {children}
+                <div className={styles.childContainer}>
+                    {children}
+                </div>
             </div>
             <div className={styles.separator} onMouseDown={handleMouseDown}>
                 <IconButton

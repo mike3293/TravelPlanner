@@ -1,11 +1,13 @@
 export class ServiceResult<T> {
     readonly isSuccessful: boolean;
     readonly result: T;
+    readonly error: string | undefined;
 
 
-    private constructor(isSuccessful: boolean, result: T) {
+    private constructor(isSuccessful: boolean, result: T, error?: string) {
         this.isSuccessful = isSuccessful;
         this.result = result;
+        this.error = error;
     }
 
 
@@ -13,7 +15,7 @@ export class ServiceResult<T> {
         return new ServiceResult(true, result);
     }
 
-    static createUnsuccessfull<T>() {
-        return new ServiceResult(false, null as T);
+    static createUnsuccessfull<T>(error?: string) {
+        return new ServiceResult(false, null as T, error);
     }
 }

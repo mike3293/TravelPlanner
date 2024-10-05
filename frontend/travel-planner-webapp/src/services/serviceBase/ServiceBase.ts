@@ -1,6 +1,9 @@
+import { toast } from 'react-toastify';
 import { ServiceResult } from './ServiceResult';
 import { BodyInitOrObject, StatusCode, URLSearchParamsInit } from './types';
 
+
+const notify = (error: string) => toast(error, { type: "error" });
 
 export abstract class ServiceBase {
     private baseUrl: string;
@@ -87,27 +90,24 @@ export abstract class ServiceBase {
                 } else if (this.clearSession) {
                     this.clearSession();
 
-                    return ServiceResult.createUnsuccessfull();
+                    return ServiceResult.createUnsuccessfull('Login required');
                 }
             }
 
             if (response.status !== StatusCode.Ok) {
-                console.debug(`Request to '${path}' failed. Code: ${response.status}`);
+                const error = await response.text();
 
-                return ServiceResult.createUnsuccessfull();
+                return ServiceResult.createUnsuccessfull(error);
             }
 
             const result = await this.parseResponse<TResult>(response);
 
             return ServiceResult.createSuccessfull(result);
         } catch (err) {
-            if (err instanceof Error) {
-                console.debug(`Request to '${path}' failed. ${err.message}`);
-            } else {
-                console.debug(`Request to '${path}' failed.`);
-            }
+            const errorString = err instanceof Error ? `Request to '${path}' failed. ${err.message}` : `Request to '${path}' failed`;
+            notify(errorString);
 
-            return ServiceResult.createUnsuccessfull();
+            return ServiceResult.createUnsuccessfull(errorString);
         }
     }
 

@@ -1,6 +1,11 @@
 import { createTheme } from '@mui/material/styles';
 import { indigo, teal, blueGrey } from '@mui/material/colors';
 
+const headerStyles = {
+    textShadow: '1px 3px 2px var(--mui-palette-grey-400)',
+    fontWeight: 700,
+}
+
 export const theme = createTheme({
     cssVariables: true,
     palette: {
@@ -14,22 +19,14 @@ export const theme = createTheme({
             light: teal[100],   // Lighter shade of secondary
             dark: teal[300],    // Darker shade of secondary
         },
-        background: {
-            default: blueGrey[900],
-            paper: blueGrey[800],
-        },
     },
     typography: {
         fontFamily: "'Roboto', sans-serif",
         fontSize: 14,
-        h1: {
-            fontSize: '2.5rem',
-            fontWeight: 700,
-        },
-        h2: {
-            fontSize: '2rem',
-            fontWeight: 600,
-        },
+        h1: headerStyles,
+        h2: headerStyles,
+        h3: headerStyles,
+        h4: headerStyles,
         button: {
             textTransform: 'none',
         },
@@ -58,18 +55,10 @@ export const theme = createTheme({
                 },
             },
         },
-        MuiAppBar: {
+        MuiCard: {
             styleOverrides: {
                 root: {
-                    backgroundColor: blueGrey[800],
-                },
-            },
-        },
-        MuiPaper: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: blueGrey[800],
-                    color: '#ffffff',
+                    borderRadius: '16px',
                 },
             },
         },

@@ -44,8 +44,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddSingleton<MongoDbContext>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<TripInfosRepository>();
+builder.Services.AddScoped<UsersService>();
 
 var app = builder.Build();
 

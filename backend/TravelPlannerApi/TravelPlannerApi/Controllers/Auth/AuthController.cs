@@ -10,10 +10,10 @@ public class AuthController : ControllerBase
 {
     private const string RefreshTokenCookie = "RefreshToken";
 
-    private readonly UserService _userService;
+    private readonly UsersService _userService;
 
 
-    public AuthController(UserService userService)
+    public AuthController(UsersService userService)
     {
         _userService = userService;
     }

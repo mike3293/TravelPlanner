@@ -6,7 +6,7 @@ public interface IRepository<TEntity> where TEntity : class
 {
     Task<ICollection<TEntity>> GetAllAsync();
 
-    Task<TEntity> GetByIdAsync(string id);
+    Task<TEntity?> GetByIdAsync(string id);
 
     Task<ICollection<TEntity>> GetWhereAsync(Expression<Func<TEntity, bool>> filter);
 

@@ -10,13 +10,13 @@ using TravelPlannerApi.Configuration;
 
 namespace TravelPlannerApi.Services.Auth;
 
-public class UserService
+public class UsersService
 {
     private readonly IRepository<User> _userRepository;
     private readonly AuthSettings _authSettings;
 
 
-    public UserService(IRepository<User> userRepository, IOptions<AuthSettings> authSettings)
+    public UsersService(IRepository<User> userRepository, IOptions<AuthSettings> authSettings)
     {
         _userRepository = userRepository;
         _authSettings = authSettings.Value;

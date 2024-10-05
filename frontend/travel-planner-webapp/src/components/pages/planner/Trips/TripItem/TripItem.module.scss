@@ -1,0 +1,30 @@
+.link {
+    text-decoration: none;
+}
+
+.card {
+    width: 200px;
+    height: 100%;
+    min-height: 200px;
+
+    &:hover {
+        box-shadow: var(--mui-shadows-4);
+    }
+
+    &Content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+}
+
+.fields {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 4px;
+
+    &Label {
+        color: var(--mui-palette-grey-500);
+    }
+}

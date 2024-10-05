@@ -7,6 +7,7 @@ import { useMutation } from 'src/components/hooks/useMutation';
 import { tripsService } from 'src/config/services';
 import { useQueryClient } from 'react-query';
 import { TripInfo } from 'src/services/trips/TripInfo';
+import { DateFormat } from 'src/config/dateFormats';
 
 
 export interface AddTripFormProps {
@@ -17,8 +18,8 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
     const queryClient = useQueryClient();
     const { mutate: create, isLoading, error } = useMutation(() => tripsService.createTripAsync({
         name: state.tripName,
-        startDate: state.startDate!.toISOString(),
-        endDate: state.endDate!.toISOString(),
+        startDate: state.startDate!,
+        endDate: state.endDate!,
     }), {
         onSuccess: (data) => {
             const queryData: TripInfo[] = queryClient.getQueryData('getTrips')!;
@@ -48,7 +49,7 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
                 <DatePicker
                     label='Start Date'
                     slotProps={{ textField: { variant: 'standard' } }}
-                    format='DD/MM/YYYY'
+                    format={DateFormat.Date}
                     value={state.startDate}
                     onChange={(date) => dispatch({ type: 'SET_START_DATE', payload: date })}
                     maxDate={state.endDate ?? undefined}
@@ -57,7 +58,7 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
                 <DatePicker
                     label='End Date'
                     slotProps={{ textField: { variant: 'standard' } }}
-                    format='DD/MM/YYYY'
+                    format={DateFormat.Date}
                     value={state.endDate}
                     onChange={(date) => dispatch({ type: 'SET_END_DATE', payload: date })}
                     minDate={state.startDate ?? undefined}

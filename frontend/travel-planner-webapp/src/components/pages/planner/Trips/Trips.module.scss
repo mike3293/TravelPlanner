@@ -8,17 +8,3 @@
     flex-wrap: wrap;
     gap: 16px;
 }
-
-.link {
-    text-decoration: none;
-}
-
-.card {
-    width: 200px;
-    height: 100%;
-    min-height: 200px;
-
-    &:hover {
-        box-shadow: var(--mui-shadows-4);
-    }
-}

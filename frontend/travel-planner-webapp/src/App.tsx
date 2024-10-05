@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -15,6 +15,7 @@ export function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
+                <CssBaseline />
                 <ThemeProvider theme={theme}>
                     <BrowserRouter>
                         <Routes>

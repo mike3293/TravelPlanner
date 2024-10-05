@@ -19,41 +19,46 @@ export abstract class ServiceBase {
 
     protected async get<TResult>(
         path: string,
+        resultProcessor?: (response: TResult) => TResult,
         params?: URLSearchParamsInit,
         init?: RequestInit
     ): Promise<ServiceResult<TResult>> {
-        return this.fetch(path, 'GET', params, undefined, init);
+        return this.fetch(path, 'GET', resultProcessor, params, undefined, init);
     }
 
     protected async post<TResult>(
         path: string,
         body?: BodyInitOrObject,
+        resultProcessor?: (response: TResult) => TResult,
         params?: URLSearchParamsInit,
         init?: RequestInit
     ): Promise<ServiceResult<TResult>> {
-        return this.fetch(path, 'POST', params, body, init);
+        return this.fetch(path, 'POST', resultProcessor, params, body, init);
     }
 
     protected async put<TResult>(
         path: string,
         body?: BodyInitOrObject,
+        resultProcessor?: (response: TResult) => TResult,
         params?: URLSearchParamsInit,
         init?: RequestInit
     ): Promise<ServiceResult<TResult>> {
-        return this.fetch<TResult>(path, 'PUT', params, body, init);
+        return this.fetch<TResult>(path, 'PUT', resultProcessor, params, body, init);
     }
 
     protected async delete<TResult>(
         path: string,
+        resultProcessor?: (response: TResult) => TResult,
         params?: URLSearchParamsInit,
         init?: RequestInit
     ): Promise<ServiceResult<TResult>> {
-        return this.fetch<TResult>(path, 'DELETE', params, undefined, init);
+        return this.fetch<TResult>(path, 'DELETE', resultProcessor, params, undefined, init);
     }
 
     private async fetch<TResult>(
         path: string,
         method: string,
+        resultProcessor?: (response: TResult) => TResult,
         params?: URLSearchParamsInit,
         body?: BodyInitOrObject,
         options: RequestInit = {},
@@ -86,7 +91,7 @@ export abstract class ServiceBase {
                 if (shouldRefreshSession && this.refreshSession) {
                     await this.refreshSession();
 
-                    return await this.fetch(path, method, params, body, options, false);
+                    return await this.fetch(path, method, resultProcessor, params, body, options, false);
                 } else if (this.clearSession) {
                     this.clearSession();
 
@@ -101,8 +106,9 @@ export abstract class ServiceBase {
             }
 
             const result = await this.parseResponse<TResult>(response);
+            const processedResult = resultProcessor ? resultProcessor(result) : result;
 
-            return ServiceResult.createSuccessfull(result);
+            return ServiceResult.createSuccessfull(processedResult);
         } catch (err) {
             const errorString = err instanceof Error ? `Request to '${path}' failed. ${err.message}` : `Request to '${path}' failed`;
             notify(errorString);

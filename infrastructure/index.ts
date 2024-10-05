@@ -1,8 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as azure from '@pulumi/azure-native';
 
-const dockerUsername = process.env.DOCKER_USERNAME;
-const dockerPassword = process.env.DOCKER_PASSWORD;
+const dockerUsername = process.env.DOCKER_USERNAME!;
+const dockerPassword = process.env.DOCKER_PASSWORD!;
+const jwtSecretKey = process.env.API_JWT_SECRET_KEY!;
+const accessTokenExpiration = process.env.API_ACCESS_TOKEN_EXPIRATION!;
+const refreshTokenExpiration = process.env.API_REFRESH_TOKEN_EXPIRATION!;
 
 // Create Resource Group
 const resourceGroup = new azure.resources.ResourceGroup('travel-planner-resource-group');
@@ -32,6 +35,11 @@ const cosmosDb = new azure.documentdb.MongoDBResourceMongoDBDatabase('travel-pla
     },
 }, { dependsOn: [cosmosAccount] });
 
+// Get Cosmos DB connection string
+const cosmosConnectionStrings = pulumi.all([resourceGroup.name, cosmosAccount.name]).apply(([resourceGroupName, accountName]) =>
+    azure.documentdb.listDatabaseAccountConnectionStrings({ resourceGroupName, accountName }));
+const cosmosConnectionString = cosmosConnectionStrings.apply(cs => cs.connectionStrings![0].connectionString);
+
 // Create App Service Plan for web apps
 const appServicePlan = new azure.web.AppServicePlan('travel-planner-service-plan', {
     resourceGroupName: resourceGroup.name,
@@ -43,7 +51,6 @@ const appServicePlan = new azure.web.AppServicePlan('travel-planner-service-plan
     kind: 'Linux',
     reserved: true,
 });
-
 
 // Define the API app
 const apiApp = new azure.web.WebApp('travel-planner-api', {
@@ -68,12 +75,18 @@ const apiApp = new azure.web.WebApp('travel-planner-api', {
                 name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                 value: 'false',
             },
+            {
+                name: 'DB_CONNECTION_STRING',
+                value: cosmosConnectionString,
+            },
         ],
         alwaysOn: false,
         linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-api:latest',
     },
     httpsOnly: true,
 }, { dependsOn: [appServicePlan] });
+
+export const apiUrl = pulumi.interpolate`https://${apiApp.defaultHostName}`;
 
 // Define the webapp
 const webApp = new azure.web.WebApp('travel-planner-webapp', {
@@ -107,4 +120,21 @@ const webApp = new azure.web.WebApp('travel-planner-webapp', {
 
 // Export the URLs of the web apps
 export const webappUrl = pulumi.interpolate`https://${webApp.defaultHostName}`;
-export const apiUrl = pulumi.interpolate`https://${apiApp.defaultHostName}`;
+
+const apiAppSettings = new azure.web.WebAppApplicationSettings('travel-planner-api-settings', {
+    name: apiApp.name,
+    resourceGroupName: resourceGroup.name,
+    properties: {
+        'DOCKER_REGISTRY_SERVER_URL': 'https://index.docker.io',
+        'DOCKER_REGISTRY_SERVER_USERNAME': dockerUsername,
+        'DOCKER_REGISTRY_SERVER_PASSWORD': dockerPassword,
+        'WEBSITES_ENABLE_APP_SERVICE_STORAGE': 'false',
+        'AllowedOrigins__0': webappUrl,
+        'ConnectionStrings__MongoDb': cosmosConnectionString,
+        'AuthSettings__ValidIssuer': apiUrl,
+        'AuthSettings__ValidAudience': webappUrl,
+        'AuthSettings__SecretKey': jwtSecretKey,
+        'AuthSettings__AccessTokenExpiration': accessTokenExpiration,
+        'AuthSettings__RefreshTokenExpiration': refreshTokenExpiration,
+    },
+}, { dependsOn: [apiApp, webApp] });

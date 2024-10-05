@@ -1,0 +1,10 @@
+.git
+.gitignore
+.gitmodules
+.vs
+.vscode
+*.sln
+*.njsproj
+README.md
+build
+node_modules

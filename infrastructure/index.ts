@@ -111,6 +111,10 @@ const webApp = new azure.web.WebApp('travel-planner-webapp', {
                 name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                 value: 'false',
             },
+            {
+                name: 'REACT_APP_API_URL',
+                value: apiUrl,
+            }
         ],
         alwaysOn: false,
         linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-webapp:latest',

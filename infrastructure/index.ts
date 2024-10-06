@@ -81,7 +81,7 @@ const apiApp = new azure.web.WebApp('travel-planner-api', {
             },
         ],
         alwaysOn: false,
-        linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-api:latest',
+        linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-api',
     },
     httpsOnly: true,
 }, { dependsOn: [appServicePlan] });
@@ -111,13 +111,9 @@ const webApp = new azure.web.WebApp('travel-planner-webapp', {
                 name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                 value: 'false',
             },
-            {
-                name: 'REACT_APP_API_URL',
-                value: apiUrl,
-            }
         ],
         alwaysOn: false,
-        linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-webapp:latest',
+        linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-webapp',
     },
     httpsOnly: true,
 }, { dependsOn: [apiApp] });
@@ -142,3 +138,7 @@ const apiAppSettings = new azure.web.WebAppApplicationSettings('travel-planner-a
         'AuthSettings__RefreshTokenExpiration': refreshTokenExpiration,
     },
 }, { dependsOn: [apiApp, webApp] });
+
+pulumi.log.info(`API jwtSecretKey: ${jwtSecretKey}`);
+pulumi.log.info(`API accessTokenExpiration: ${accessTokenExpiration}`);
+pulumi.log.info(`API settings: ${apiAppSettings.kind}`);

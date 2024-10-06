@@ -4,6 +4,8 @@ import * as azure from '@pulumi/azure-native';
 const jwtSecretKey = process.env.API_JWT_SECRET_KEY!;
 const accessTokenExpiration = process.env.API_ACCESS_TOKEN_EXPIRATION!;
 const refreshTokenExpiration = process.env.API_REFRESH_TOKEN_EXPIRATION!;
+const apiVersion = process.env.API_VERSION || 'latest';
+const webappVersion = process.env.WEBAPP_VERSION || 'latest';
 
 // Create Resource Group
 const resourceGroup = new azure.resources.ResourceGroup('travel-planner-resource-group');
@@ -65,13 +67,9 @@ const apiApp = new azure.web.WebApp('travel-planner-api', {
                 name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                 value: 'false',
             },
-            {
-                name: 'DB_CONNECTION_STRING',
-                value: cosmosConnectionString,
-            },
         ],
         alwaysOn: false,
-        linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-api',
+        linuxFxVersion: pulumi.interpolate`DOCKER|mikhailgorodilov/travel-planner-api:${apiVersion}`,
     },
     httpsOnly: true,
 }, { dependsOn: [appServicePlan] });
@@ -95,7 +93,7 @@ const webApp = new azure.web.WebApp('travel-planner-webapp', {
             },
         ],
         alwaysOn: false,
-        linuxFxVersion: 'DOCKER|mikhailgorodilov/travel-planner-webapp',
+        linuxFxVersion: pulumi.interpolate`DOCKER|mikhailgorodilov/travel-planner-webapp:${webappVersion}`,
     },
     httpsOnly: true,
 }, { dependsOn: [apiApp] });
@@ -116,5 +114,6 @@ const apiAppSettings = new azure.web.WebAppApplicationSettings('travel-planner-a
         'AuthSettings__SecretKey': jwtSecretKey,
         'AuthSettings__AccessTokenExpiration': accessTokenExpiration,
         'AuthSettings__RefreshTokenExpiration': refreshTokenExpiration,
+        'Version': apiVersion,
     },
 }, { dependsOn: [apiApp, webApp] });

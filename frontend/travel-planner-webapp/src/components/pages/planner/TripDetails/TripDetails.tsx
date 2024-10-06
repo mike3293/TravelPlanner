@@ -9,7 +9,7 @@ export function TripDetails() {
 
     return (
         <div className={styles.tripList}>
-            <Typography variant="h5">{tripId}!?</Typography>
+            <Typography variant="h5">{tripId}!</Typography>
         </div>
     );
 };

@@ -39,7 +39,7 @@ public class TripsController : ControllerBase
         var existingTrip = await _tripsRepository.GetWhereAsync(t => t.UserId == userId && t.Name == model.Name);
         if (existingTrip.Any())
         {
-            return Conflict("A trip with the same name already exists.");
+            return Conflict("A trip with the same name already exists");
         }
 
         var trip = new Trip

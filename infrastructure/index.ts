@@ -78,6 +78,7 @@ export const apiUrl = pulumi.interpolate`https://${apiApp.defaultHostName}`;
 
 // Define the webapp
 const webApp = new azure.web.WebApp('travel-planner-webapp', {
+    name: 'travel-planner-webapp',
     resourceGroupName: resourceGroup.name,
     location: resourceGroup.location,
     serverFarmId: appServicePlan.id,

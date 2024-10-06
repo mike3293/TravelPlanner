@@ -1,8 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as azure from '@pulumi/azure-native';
 
-const dockerUsername = process.env.DOCKER_USERNAME!;
-const dockerPassword = process.env.DOCKER_PASSWORD!;
 const jwtSecretKey = process.env.API_JWT_SECRET_KEY!;
 const accessTokenExpiration = process.env.API_ACCESS_TOKEN_EXPIRATION!;
 const refreshTokenExpiration = process.env.API_REFRESH_TOKEN_EXPIRATION!;
@@ -64,14 +62,6 @@ const apiApp = new azure.web.WebApp('travel-planner-api', {
                 value: 'https://index.docker.io',
             },
             {
-                name: 'DOCKER_REGISTRY_SERVER_USERNAME',
-                value: dockerUsername,
-            },
-            {
-                name: 'DOCKER_REGISTRY_SERVER_PASSWORD',
-                value: dockerPassword,
-            },
-            {
                 name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                 value: 'false',
             },
@@ -100,14 +90,6 @@ const webApp = new azure.web.WebApp('travel-planner-webapp', {
                 value: 'https://index.docker.io',
             },
             {
-                name: 'DOCKER_REGISTRY_SERVER_USERNAME',
-                value: dockerUsername,
-            },
-            {
-                name: 'DOCKER_REGISTRY_SERVER_PASSWORD',
-                value: dockerPassword,
-            },
-            {
                 name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE',
                 value: 'false',
             },
@@ -126,8 +108,6 @@ const apiAppSettings = new azure.web.WebAppApplicationSettings('travel-planner-a
     resourceGroupName: resourceGroup.name,
     properties: {
         'DOCKER_REGISTRY_SERVER_URL': 'https://index.docker.io',
-        'DOCKER_REGISTRY_SERVER_USERNAME': dockerUsername,
-        'DOCKER_REGISTRY_SERVER_PASSWORD': dockerPassword,
         'WEBSITES_ENABLE_APP_SERVICE_STORAGE': 'false',
         'AllowedOrigins__0': webappUrl,
         'ConnectionStrings__MongoDb': cosmosConnectionString,
@@ -138,7 +118,3 @@ const apiAppSettings = new azure.web.WebAppApplicationSettings('travel-planner-a
         'AuthSettings__RefreshTokenExpiration': refreshTokenExpiration,
     },
 }, { dependsOn: [apiApp, webApp] });
-
-pulumi.log.info(`API jwtSecretKey: ${jwtSecretKey}`);
-pulumi.log.info(`API accessTokenExpiration: ${accessTokenExpiration}`);
-pulumi.log.info(`API settings: ${apiAppSettings.kind}`);

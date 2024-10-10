@@ -13,6 +13,7 @@ export abstract class ServiceWithAuthBase extends ServiceBase {
 
 
     async willSendRequest(request: RequestInit) {
+        await this.refreshSession();
         let accessToken = this.store.getState().accessToken;
 
         if (accessToken) {

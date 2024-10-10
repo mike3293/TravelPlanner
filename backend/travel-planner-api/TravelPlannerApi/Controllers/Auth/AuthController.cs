@@ -99,7 +99,7 @@ public class AuthController : ControllerBase
             Path = "/",
             HttpOnly = true,
             Secure = true,
-            Expires = tokens.RefreshToken.ExpirationDate,
+            //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
         Response.Cookies.Append(RefreshTokenCookie, tokens.RefreshToken.Token, cookieOptions);
@@ -110,7 +110,7 @@ public class AuthController : ControllerBase
             Path = "/",
             HttpOnly = true,
             Secure = true,
-            Expires = tokens.RefreshToken.ExpirationDate,
+            //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
         Response.Cookies.Append(RefreshTokenCookie + "2", tokens.RefreshToken.Token, cookieOptions2);
@@ -122,7 +122,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
-            Expires = tokens.RefreshToken.ExpirationDate,
+            //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
         Response.Cookies.Append(RefreshTokenCookie + "3", tokens.RefreshToken.Token, cookieOptions3);
@@ -134,7 +134,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
-            Expires = tokens.RefreshToken.ExpirationDate,
+            //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
         Response.Cookies.Append(RefreshTokenCookie + "4", tokens.RefreshToken.Token, cookieOptions4);

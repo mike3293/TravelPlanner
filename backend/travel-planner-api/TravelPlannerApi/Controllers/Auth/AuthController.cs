@@ -99,6 +99,7 @@ public class AuthController : ControllerBase
             Path = "/",
             HttpOnly = true,
             Secure = true,
+            IsEssential = true,
             //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
@@ -110,6 +111,7 @@ public class AuthController : ControllerBase
             Path = "/",
             HttpOnly = true,
             Secure = true,
+            IsEssential = true,
             //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
@@ -122,6 +124,8 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
+            IsEssential = true,
+
             //Expires = tokens.RefreshToken.ExpirationDate,
         };
 
@@ -134,6 +138,8 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
+            IsEssential = true,
+
             //Expires = tokens.RefreshToken.ExpirationDate,
         };
 

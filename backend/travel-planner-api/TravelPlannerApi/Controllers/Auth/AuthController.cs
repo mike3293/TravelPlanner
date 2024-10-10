@@ -97,6 +97,7 @@ public class AuthController : ControllerBase
         {
             HttpOnly = true,
             Secure = true,
+            SameSite = SameSiteMode.None,
             Expires = tokens.RefreshToken.ExpirationDate,
         };
 

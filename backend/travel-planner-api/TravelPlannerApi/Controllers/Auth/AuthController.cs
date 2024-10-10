@@ -95,9 +95,10 @@ public class AuthController : ControllerBase
     {
         var cookieOptions = new CookieOptions
         {
+            Domain = "travel-planner-api0e700ce5.azurewebsites.net",
+            Path = "/",
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.None,
             Expires = tokens.RefreshToken.ExpirationDate,
         };
 

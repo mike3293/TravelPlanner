@@ -87,17 +87,17 @@ export abstract class ServiceBase {
                 }
             );
 
-            if (response.status === StatusCode.Unauthorized) {
-                if (shouldRefreshSession && this.refreshSession) {
-                    await this.refreshSession();
+            // if (response.status === StatusCode.Unauthorized) {
+            if (shouldRefreshSession && this.refreshSession) {
+                await this.refreshSession();
 
-                    return await this.fetch(path, method, resultProcessor, params, body, options, false);
-                } else if (this.clearSession) {
-                    this.clearSession();
+                return await this.fetch(path, method, resultProcessor, params, body, options, false);
+            } else if (this.clearSession) {
+                this.clearSession();
 
-                    return ServiceResult.createUnsuccessfull('Login required');
-                }
+                return ServiceResult.createUnsuccessfull('Login required');
             }
+            // }
 
             if (response.status !== StatusCode.Ok) {
                 const error = await response.text();

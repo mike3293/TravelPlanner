@@ -1,4 +1,4 @@
-﻿namespace TravelPlannerApi.Domain;
+﻿namespace TravelPlannerApi.Models.Trips;
 
 public class TripDay
 {

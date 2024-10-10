@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TravelPlannerApi.Domain;
 using TravelPlannerApi.Domain.Repositories;
 using TravelPlannerApi.Models.Trips;
 using TravelPlannerApi.Services.Auth;
@@ -13,11 +12,13 @@ namespace TravelPlannerApi.Controllers.Trips;
 public class TripsController : ControllerBase
 {
     private readonly TripInfosRepository _tripsRepository;
+    private readonly IRepository<Domain.Trip> _tripDetailsRepository;
 
 
-    public TripsController(TripInfosRepository tripsRepository)
+    public TripsController(TripInfosRepository tripsRepository, IRepository<Domain.Trip> tripDetailsRepository)
     {
         _tripsRepository = tripsRepository;
+        _tripDetailsRepository = tripDetailsRepository;
     }
 
 
@@ -26,9 +27,25 @@ public class TripsController : ControllerBase
     {
         var userId = User.GetUserId();
         var trips = await _tripsRepository.GetWhereAsync(t => t.UserId == userId);
-        var tripDataContracts = trips.Select(CreateFrom).ToList();
+        var tripDataContracts = trips.Select(TripsCreator.CreateFrom).ToList();
 
         return tripDataContracts;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Trip>> Get(string id)
+    {
+        var userId = User.GetUserId();
+
+        var trip = await _tripDetailsRepository.GetByIdAsync(id);
+        if (trip == null || trip.UserId != userId)
+        {
+            return NotFound();
+        }
+
+        var tripDataContract = TripsCreator.CreateWithDetailsFrom(trip);
+
+        return tripDataContract;
     }
 
     [HttpPost]
@@ -42,7 +59,7 @@ public class TripsController : ControllerBase
             return Conflict("A trip with the same name already exists");
         }
 
-        var trip = new Trip
+        var trip = new Domain.Trip
         {
             Id = Guid.NewGuid().ToString("N"),
             UserId = userId,
@@ -52,7 +69,7 @@ public class TripsController : ControllerBase
         };
 
         await _tripsRepository.CreateAsync(trip);
-        var tripDataContract = CreateFrom(trip);
+        var tripDataContract = TripsCreator.CreateFrom(trip);
 
         return tripDataContract;
     }
@@ -70,17 +87,5 @@ public class TripsController : ControllerBase
         await _tripsRepository.DeleteAsync(trip.Id);
 
         return Ok();
-    }
-
-
-    private TripInfo CreateFrom(Trip trip)
-    {
-        return new TripInfo
-        {
-            Id = trip.Id,
-            Name = trip.Name,
-            StartDate = trip.StartDate,
-            EndDate = trip.EndDate,
-        };
     }
 }

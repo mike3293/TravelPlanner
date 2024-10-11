@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 
-def generate_number_image(number, font_path="arialbd.ttf", size=(40, 40), font_size=20):
+def generate_number_image(text, fileName, font_path="arialbd.ttf", size=(40, 40), font_size=20):
     # Create an image with a blue background
     img = Image.new('RGBA', size, (0, 0, 0, 0))  # Beautiful blue
     d = ImageDraw.Draw(img)
@@ -13,7 +13,6 @@ def generate_number_image(number, font_path="arialbd.ttf", size=(40, 40), font_s
     font = ImageFont.truetype(font_path, font_size)
     
     # Get the bounding box of the text
-    text = str(number)
     text_bbox = d.textbbox((0, 0), text, font=font)
     text_width = text_bbox[2] - text_bbox[0]
     text_height = text_bbox[3] - text_bbox[1]
@@ -24,8 +23,11 @@ def generate_number_image(number, font_path="arialbd.ttf", size=(40, 40), font_s
     # Add the number to the image with white color
     d.text(position, text, font=font, fill=(255, 255, 255))  # White text
     # Save the image
-    img.save(f'images/number-{number}.png')
+    img.save(f'images/{fileName}.png')
+
 
 # Generate images for numbers 1 to 100
 for i in range(1, 100):
-    generate_number_image(i)
+    generate_number_image(str(i), f'number-{i}')
+
+generate_number_image('', 'empty')

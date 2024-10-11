@@ -1,12 +1,23 @@
 import moment from 'moment';
 
+
 export function createDates(obj: any): any {
-    const updatedObj = { ...obj };
-    for (const key in obj) {
-        if (updatedObj.hasOwnProperty(key) && key.endsWith('Date')) {
-            updatedObj[key] = moment(updatedObj[key]);
-        }
+    if (Array.isArray(obj)) {
+        return obj.map(createDates);
     }
 
-    return updatedObj;
+    if (typeof obj === 'object') {
+        const updatedObj = { ...obj };
+        for (const key in obj) {
+            if (updatedObj.hasOwnProperty(key) && key.toLowerCase().endsWith('date')) {
+                updatedObj[key] = moment(updatedObj[key]);
+            } else {
+                updatedObj[key] = createDates(updatedObj[key]);
+            }
+        }
+
+        return updatedObj;
+    }
+
+    return obj;
 }

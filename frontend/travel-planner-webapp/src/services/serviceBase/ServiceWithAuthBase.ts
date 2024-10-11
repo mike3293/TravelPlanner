@@ -24,7 +24,7 @@ export abstract class ServiceWithAuthBase extends ServiceBase {
     }
 
     async refreshSession() {
-        const accessTokenResult = await this.post<string>('auth/refresh', undefined, undefined, undefined, { credentials: 'include' });
+        const accessTokenResult = await this.fetch<string>('auth/refresh', 'POST', undefined, undefined, undefined, { credentials: 'include' }, false);
 
         if (accessTokenResult.isSuccessful) {
             this.store.setState({ accessToken: accessTokenResult.result });

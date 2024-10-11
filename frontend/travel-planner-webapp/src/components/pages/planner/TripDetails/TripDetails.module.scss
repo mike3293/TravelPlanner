@@ -1,9 +1,20 @@
-.tripList {
+.trip {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
 }
 
-.card {
-    margin-bottom: 15px;
+.fields {
+    display: flex;
+    gap: 16px;
+
+    &Field {
+        display: flex;
+        gap: 4px;
+    }
+
+    &Label {
+        color: var(--mui-palette-grey-500);
+    }
 }

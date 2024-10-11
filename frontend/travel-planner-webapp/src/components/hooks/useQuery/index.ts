@@ -1,9 +1,9 @@
-import { useQuery as useQueryBase, UseQueryOptions } from 'react-query';
+import { QueryKey, useQuery as useQueryBase, UseQueryOptions } from 'react-query';
 import { ServiceResult } from 'src/services/serviceBase/ServiceResult';
 
 
 export function useQuery<T>(
-    key: string,
+    key: QueryKey,
     fetch: () => Promise<ServiceResult<T>>,
     options?: Omit<UseQueryOptions<T, string>, 'queryKey' | 'queryFn'>
 ) {

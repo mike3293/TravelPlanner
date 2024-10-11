@@ -55,7 +55,7 @@ export abstract class ServiceBase {
         return this.fetch<TResult>(path, 'DELETE', resultProcessor, params, undefined, init);
     }
 
-    private async fetch<TResult>(
+    protected async fetch<TResult>(
         path: string,
         method: string,
         resultProcessor?: (response: TResult) => TResult,

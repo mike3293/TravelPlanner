@@ -12,7 +12,7 @@ export class AuthService extends ServiceBase {
 
 
     public async loginAsync(email: string, password: string): Promise<boolean> {
-        const accessTokenResult = await this.post<string>('auth/login', { email, password });
+        const accessTokenResult = await this.post<string>('auth/login', { email, password }, undefined, undefined, { credentials: 'include' });
 
         if (accessTokenResult.isSuccessful) {
             this.store.setState({ accessToken: accessTokenResult.result });
@@ -22,7 +22,7 @@ export class AuthService extends ServiceBase {
     }
 
     public async registerAsync(email: string, password: string): Promise<boolean> {
-        const accessTokenResult = await this.post<string>('auth/register', { email, password });
+        const accessTokenResult = await this.post<string>('auth/register', { email, password }, undefined, undefined, { credentials: 'include' });
 
         if (accessTokenResult.isSuccessful) {
             this.store.setState({ accessToken: accessTokenResult.result });

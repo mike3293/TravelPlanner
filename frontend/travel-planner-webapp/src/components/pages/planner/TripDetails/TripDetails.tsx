@@ -1,17 +1,17 @@
 import { Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { Moment } from 'moment';
+import { useQueryClient } from 'react-query';
+
 import { tripsService } from 'src/config/services';
 import { useQuery } from 'src/components/hooks/useQuery';
 import { Spinner } from 'src/components/atoms/Spinner';
+import { DateFormat } from 'src/config/dateFormats';
+
+import { TripDays } from './TripDays';
 
 import styles from './TripDetails.module.scss';
-import { DateFormat } from 'src/config/dateFormats';
-import { Moment } from 'moment';
-import { useCallback } from 'react';
-import { useQueryClient } from 'react-query';
-import { Trip } from 'src/services/trips/Trip';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { TripDays } from './TripDays';
+
 
 const renderDateField = (label: string, date: Moment) => (
     <div className={styles.fieldsField}>
@@ -19,7 +19,6 @@ const renderDateField = (label: string, date: Moment) => (
         <Typography>{date.format(DateFormat.Date)}</Typography>
     </div>
 );
-
 
 
 export function TripDetails() {

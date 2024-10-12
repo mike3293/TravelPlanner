@@ -1,6 +1,8 @@
 import { links } from 'src/links';
-import { Credentials } from '../../organisms/Credentials';
 import { authService } from 'src/config/services';
+
+import { Credentials } from '../../organisms/Credentials';
+
 
 export function Register() {
     return (

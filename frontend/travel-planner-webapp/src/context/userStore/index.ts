@@ -5,15 +5,15 @@ import { IUserStore } from './types';
 
 
 export const useUserStore = create<IUserStore>()(
-  persist(
-    (set, get) => ({
-      accessToken: undefined,
-      resetUser: () => {
-        set({
-          accessToken: undefined,
-        });
-      },
-    }),
-    { name: 'user-storage' },
-  ),
+    persist(
+        (set) => ({
+            accessToken: undefined,
+            resetUser: () => {
+                set({
+                    accessToken: undefined,
+                });
+            },
+        }),
+        { name: 'user-storage' },
+    ),
 )

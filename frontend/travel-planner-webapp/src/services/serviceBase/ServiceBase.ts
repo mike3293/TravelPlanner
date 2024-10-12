@@ -1,9 +1,10 @@
 import { toast } from 'react-toastify';
+
 import { ServiceResult } from './ServiceResult';
 import { BodyInitOrObject, StatusCode, URLSearchParamsInit } from './types';
 
 
-const notify = (error: string) => toast(error, { type: "error" });
+const notify = (error: string) => toast(error, { type: 'error' });
 
 export abstract class ServiceBase {
     private baseUrl: string;
@@ -125,9 +126,11 @@ export abstract class ServiceBase {
                 return;
             }
 
-            Array.isArray(value)
-                ? value.forEach((item) => item && params.append(key, item))
-                : params.append(key, value);
+            if (Array.isArray(value)) {
+                value.forEach((item) => item && params.append(key, item));
+            } else {
+                params.append(key, value);
+            }
         });
 
         return params;

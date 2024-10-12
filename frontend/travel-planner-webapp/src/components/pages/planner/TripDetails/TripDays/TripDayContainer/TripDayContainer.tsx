@@ -1,16 +1,10 @@
-import { Card, CardContent, CardHeader, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import { tripsService } from 'src/config/services';
-import { useQuery } from 'src/components/hooks/useQuery';
-import { Spinner } from 'src/components/atoms/Spinner';
+import { Card, CardContent, Typography } from '@mui/material';
+import { ReactNode } from 'react';
+
+import { DateFormat } from 'src/config/dateFormats';
+import { TripDay } from 'src/services/trips/TripDay';
 
 import styles from './TripDayContainer.module.scss';
-import { DateFormat } from 'src/config/dateFormats';
-import { Moment } from 'moment';
-import { TripDay } from 'src/services/trips/TripDay';
-import { TripDayActivity } from 'src/services/trips/TripDayActivity';
-import { Activity } from '../Activity';
-import { ReactNode } from 'react';
 
 
 export interface TripDayContainerProps {

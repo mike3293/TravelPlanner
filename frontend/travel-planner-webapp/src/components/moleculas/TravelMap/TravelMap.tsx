@@ -6,12 +6,15 @@ import {
 } from 'react-leaflet';
 import VectorTileLayer from 'react-leaflet-vector-tile-layer';
 import L, { LatLng } from 'leaflet';
+
 import constants from 'src/config/constants';
+
 
 L.Icon.Default.imagePath = 'images/leaflet/';
 
 const LocationMarker = ({ addLocation }: { addLocation: (latlng: LatLng) => void }) => {
     useMapEvents({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         click(event: any) {
             addLocation(event.latlng);
         }
@@ -20,6 +23,7 @@ const LocationMarker = ({ addLocation }: { addLocation: (latlng: LatLng) => void
     return null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function TravelMapInner(_: any, ref: React.Ref<L.Map>) {
     const [locations, setLocations] = useState<{ name: string; lat: number; lng: number }[]>([]);
 

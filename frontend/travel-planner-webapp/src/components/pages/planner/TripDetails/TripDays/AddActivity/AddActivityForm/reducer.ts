@@ -1,5 +1,6 @@
 import { Moment } from 'moment';
 
+
 export interface TripState {
     tripName: string;
     startDate: Moment | null;

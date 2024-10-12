@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { IUserStore } from 'src/context/userStore/types';
 import { StoreApi } from 'zustand/vanilla';
+
+import { IUserStore } from 'src/context/userStore/types';
+
 
 export type UserStoreApi = StoreApi<IUserStore>;
 

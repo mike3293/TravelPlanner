@@ -1,11 +1,12 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { Moment } from 'moment';
+
 import { TripInfo } from 'src/services/trips/TripInfo';
+import { links } from 'src/links';
+import { DateFormat } from 'src/config/dateFormats';
 
 import styles from './TripItem.module.scss';
-import { links } from 'src/links';
-import { Moment } from 'moment';
-import { DateFormat } from 'src/config/dateFormats';
 
 
 interface TripItemProps {

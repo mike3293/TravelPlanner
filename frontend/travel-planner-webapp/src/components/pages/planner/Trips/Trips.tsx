@@ -1,14 +1,15 @@
-import { Card, CardContent, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Typography } from '@mui/material';
+import orderBy from 'lodash/orderBy';
 
 import { tripsService } from 'src/config/services';
 import { useQuery } from 'src/components/hooks/useQuery';
+import { Spinner } from 'src/components/atoms/Spinner';
+
 import { AddTrip } from './AddTrip';
+import { TripItem } from './TripItem';
 
 import styles from './Trips.module.scss';
-import { Spinner } from 'src/components/atoms/Spinner';
-import { TripItem } from './TripItem';
-import orderBy from 'lodash/orderBy';
+
 
 export function Trips() {
     const { data: trips = [], isLoading, error } = useQuery(

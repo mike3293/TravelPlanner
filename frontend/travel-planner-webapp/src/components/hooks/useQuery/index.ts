@@ -1,4 +1,5 @@
 import { QueryKey, useQuery as useQueryBase, UseQueryOptions } from 'react-query';
+
 import { ServiceResult } from 'src/services/serviceBase/ServiceResult';
 
 

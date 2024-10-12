@@ -3,11 +3,12 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { theme } from './config/theme/theme';
 import { PlannerContainer, Trips, TripDetails } from './components/pages/planner';
 import { Register, LogIn } from './components/pages/auth';
-import { QueryClient, QueryClientProvider } from 'react-query';
+
 
 const queryClient = new QueryClient();
 

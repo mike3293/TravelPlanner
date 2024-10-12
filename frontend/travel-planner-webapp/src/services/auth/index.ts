@@ -1,6 +1,7 @@
 import { ServiceBase } from '../serviceBase';
 import { UserStoreApi } from '../serviceBase/types';
 
+
 export class AuthService extends ServiceBase {
     private readonly store: UserStoreApi;
 

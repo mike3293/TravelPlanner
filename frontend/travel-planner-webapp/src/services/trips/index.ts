@@ -4,7 +4,6 @@ import { TripCreate } from './TripCreate';
 import { Trip } from './Trip';
 
 
-
 export class TripsService extends ServiceWithAuthBase {
     public async getTripsAsync() {
         return this.get<TripInfo[]>('trips', ts => ts.map(createDates));

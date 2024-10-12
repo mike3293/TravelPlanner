@@ -1,21 +1,12 @@
-import { Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import { tripsService } from 'src/config/services';
-import { useQuery } from 'src/components/hooks/useQuery';
-import { Spinner } from 'src/components/atoms/Spinner';
-
-import styles from './TripDays.module.scss';
-import { DateFormat } from 'src/config/dateFormats';
-import { Moment } from 'moment';
-import { memo, useCallback } from 'react';
-import { useQueryClient } from 'react-query';
-import { Trip } from 'src/services/trips/Trip';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
+
 import { TripDay } from 'src/services/trips/TripDay';
+
 import { Activity } from './Activity';
 import { TripDayContainer } from './TripDayContainer';
-import { AddDay } from './AddDay';
-import { AddActivity } from './AddActivity';
+
+import styles from './TripDays.module.scss';
 
 
 const reorder = (
@@ -52,24 +43,24 @@ const move = (
     return result;
 };
 
-const grid = 8;
+// const grid = 8;
 
-const getItemStyle = (
-    isDragging: boolean,
-    draggableStyle: React.CSSProperties | undefined
-): React.CSSProperties => ({
-    userSelect: 'none',
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`,
-    background: isDragging ? 'lightgreen' : 'grey',
-    ...draggableStyle
-});
+// const getItemStyle = (
+//     isDragging: boolean,
+//     draggableStyle: React.CSSProperties | undefined
+// ): React.CSSProperties => ({
+//     userSelect: 'none',
+//     padding: grid * 2,
+//     margin: `0 0 ${grid}px 0`,
+//     background: isDragging ? 'lightgreen' : 'grey',
+//     ...draggableStyle
+// });
 
-const getListStyle = (isDraggingOver: boolean): React.CSSProperties => ({
-    background: isDraggingOver ? 'lightblue' : 'lightgrey',
-    padding: grid,
-    width: 250
-});
+// const getListStyle = (isDraggingOver: boolean): React.CSSProperties => ({
+//     background: isDraggingOver ? 'lightblue' : 'lightgrey',
+//     padding: grid,
+//     width: 250
+// });
 
 
 export interface TripDaysProps {
@@ -106,7 +97,7 @@ export function TripDays({ days, setDays }: TripDaysProps) {
     return (
         <div className={styles.days}>
             <DragDropContext onDragEnd={onDragEnd}>
-                {days.map((day, ind) => (
+                {days.map((day) => (
                     <Droppable key={day.id} droppableId={day.id}>
                         {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
                             <div

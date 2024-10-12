@@ -13,7 +13,7 @@ export abstract class ServiceWithAuthBase extends ServiceBase {
 
 
     async willSendRequest(request: RequestInit) {
-        let accessToken = this.store.getState().accessToken;
+        const accessToken = this.store.getState().accessToken;
 
         if (accessToken) {
             request.headers = {

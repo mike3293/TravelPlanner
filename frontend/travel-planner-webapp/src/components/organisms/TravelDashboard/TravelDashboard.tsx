@@ -3,10 +3,11 @@ import classNames from 'classnames';
 import { IconButton } from '@mui/material';
 import debounce from 'lodash/debounce';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import 'leaflet/dist/leaflet.css';
+
 import { TravelMap } from 'src/components/moleculas/TravelMap';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 
-import 'leaflet/dist/leaflet.css';
 import styles from './TravelDashboard.module.scss';
 
 

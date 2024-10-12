@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material/styles';
-import { indigo, teal, blueGrey } from '@mui/material/colors';
+import { indigo, teal } from '@mui/material/colors';
+
 
 const headerStyles = {
     textShadow: '1px 3px 2px var(--mui-palette-grey-400)',
@@ -21,7 +22,7 @@ export const theme = createTheme({
         },
     },
     typography: {
-        fontFamily: "'Roboto', sans-serif",
+        fontFamily: '\'Roboto\', sans-serif',
         fontSize: 14,
         h1: headerStyles,
         h2: headerStyles,

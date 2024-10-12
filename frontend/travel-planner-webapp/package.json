@@ -34,12 +34,6 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
     "browserslist": {
         "production": [
             ">0.2%",
@@ -53,6 +47,7 @@
         ]
     },
     "devDependencies": {
+        "@eslint/js": "^9.12.0",
         "@types/jest": "^27.5.2",
         "@types/leaflet": "^1.9.12",
         "@types/lodash": "^4.17.9",
@@ -60,6 +55,12 @@
         "@types/react": "^18.3.10",
         "@types/react-beautiful-dnd": "^13.1.8",
         "@types/react-dom": "^18.3.0",
-        "typescript": "^4.9.5"
+        "eslint": "^9.12.0",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-react": "^7.37.1",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "globals": "^15.11.0",
+        "typescript": "^4.9.5",
+        "typescript-eslint": "^8.8.1"
     }
 }

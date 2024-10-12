@@ -49,6 +49,11 @@ export default [
                 'prefer-single',
             ],
             quotes: ['error', 'single'],
+            'no-useless-rename': ['error', {
+                'ignoreDestructuring': false,
+                'ignoreImport': false,
+                'ignoreExport': false
+            }],
             'react-hooks/exhaustive-deps': 'warn',
             'react/react-in-jsx-scope': 'off',
             'import/prefer-default-export': 'off',

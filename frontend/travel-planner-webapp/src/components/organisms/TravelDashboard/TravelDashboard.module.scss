@@ -24,6 +24,8 @@
     cursor: col-resize;
     transition: background-color 0.3s ease;
     user-select: none;
+    overflow: hidden;
+    z-index: 1;
 
     &:hover {
         background-color: var(--mui-palette-primary-main);

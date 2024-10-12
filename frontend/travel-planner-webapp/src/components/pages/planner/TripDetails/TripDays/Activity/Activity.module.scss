@@ -12,4 +12,13 @@
     &:hover {
         box-shadow: var(--mui-shadows-2);
     }
+
+    & &Delete {
+        padding: 2px;
+        color: var(--mui-palette-error-light);
+
+        &:hover {
+            color: var(--mui-palette-error-main);
+        }
+    }
 }

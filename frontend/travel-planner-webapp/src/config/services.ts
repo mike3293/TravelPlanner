@@ -8,7 +8,7 @@ import constants from './constants';
 
 const authService = new AuthService(constants.API_URL, useUserStore);
 const tripsService = new TripsService(constants.API_URL, useUserStore);
-const geocodingService = new GeocodingService(constants.GEOCODER_API_URL, constants.GEOCODER_API_KEY);
+const geocodingService = new GeocodingService(constants.GEOCODER_API_KEY);
 
 export {
     authService,

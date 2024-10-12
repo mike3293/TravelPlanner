@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { indigo, teal } from '@mui/material/colors';
+import { common, indigo, red, teal } from '@mui/material/colors';
 
 
 const headerStyles = {
@@ -20,6 +20,10 @@ export const theme = createTheme({
             light: teal[100],   // Lighter shade of secondary
             dark: teal[300],    // Darker shade of secondary
         },
+        error: {
+            light: red[200],
+            main: red[400],
+        }
     },
     typography: {
         fontFamily: '\'Roboto\', sans-serif',
@@ -33,10 +37,25 @@ export const theme = createTheme({
         },
     },
     components: {
+        MuiTooltip: {
+            styleOverrides: {
+                tooltip: {
+                    background: common.white,
+                    color: 'var(--mui-palette-text-primary)',
+                    fontSize: 14,
+                    fontWeight: 400,
+                    boxShadow: 'var(--mui-shadows-2)',
+                    border: '2px solid var(--mui-palette-grey-300)',
+                    borderRadius: 8,
+                    padding: 16,
+                    maxWidth: 320,
+                },
+            }
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: '8px',
+                    borderRadius: 8,
                     padding: '10px 20px',
                     fontSize: 16,
                 },

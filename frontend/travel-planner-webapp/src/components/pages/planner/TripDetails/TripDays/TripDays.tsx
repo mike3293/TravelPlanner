@@ -47,10 +47,10 @@ const move = (
 
 export interface TripDaysProps {
     days: TripDay[];
-    setDays: (days: TripDay[]) => void;
+    onDaysChange: (days: TripDay[]) => void;
 }
 
-export function TripDays({ days, setDays }: TripDaysProps) {
+export function TripDays({ days, onDaysChange }: TripDaysProps) {
     const onDragEnd = (result: DropResult) => {
         const { source, destination } = result;
 
@@ -65,14 +65,14 @@ export function TripDays({ days, setDays }: TripDaysProps) {
             const items = reorder(days.find(d => d.id === sInd)!.activities, source.index, destination.index);
             const newState = [...days];
             newState.find(d => d.id === sInd)!.activities = items;
-            setDays(newState);
+            onDaysChange(newState);
         } else {
             const result = move(days.find(d => d.id === sInd)!.activities, days.find(d => d.id === dInd)!.activities, source, destination);
             const newState = [...days];
             newState.find(d => d.id === sInd)!.activities = result[sInd];
             newState.find(d => d.id === dInd)!.activities = result[dInd];
 
-            setDays(newState);
+            onDaysChange(newState);
         }
     };
 
@@ -104,7 +104,7 @@ export function TripDays({ days, setDays }: TripDaysProps) {
                                                         onDelete={() => {
                                                             const newState = [...days];
                                                             newState.find(d => d.id === day.id)!.activities.splice(index, 1);
-                                                            setDays(newState);
+                                                            onDaysChange(newState);
                                                         }}
                                                     />
                                                 </div>
@@ -117,7 +117,7 @@ export function TripDays({ days, setDays }: TripDaysProps) {
                                         onCreate={(activity) => {
                                             const newState = [...days];
                                             newState.find(d => d.id === day.id)!.activities.push({ ...activity, id: getUniqueId() });
-                                            setDays(newState);
+                                            onDaysChange(newState);
                                         }}
                                     />
                                 </TripDayContainer>

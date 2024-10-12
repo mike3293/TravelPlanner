@@ -1,6 +1,3 @@
-import { TripDay } from 'src/services/trips/TripDay';
-
-
 export interface PointWithAddress {
     latitude: number;
     longitude: number;
@@ -8,9 +5,11 @@ export interface PointWithAddress {
 }
 
 export interface IPointSelectionStore {
-    days: TripDay[];
-    isPointRequested: () => boolean;
     pointRequestPromise: Promise<IPointSelectionStore['confirmPointSelection']> | null;
+    requestedPoint: PointWithAddress | null;
+    isPointRequested: () => boolean;
     requestPointSelectionAsync: () => Promise<PointWithAddress>;
     confirmPointSelection: (point: L.LatLng) => void;
+    updateRequestedPointAsync: (point: L.LatLng) => void;
+    clearRequestedPoint: () => void;
 }

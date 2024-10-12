@@ -3,30 +3,37 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { geocodingService } from 'src/config/services';
 
-import { IPointSelectionStore } from './types';
+import { IPointSelectionStore, PointWithAddress } from './types';
 
 
-const getAddressAsync = async (point: L.LatLng) => {
+const allowedTypes = ['street_address', 'route'];
+
+const getPointWithAddressAsync = async (point: L.LatLng): Promise<PointWithAddress> => {
     const locationResult = await geocodingService.getAddressAsync(point.lat, point.lng);
-    if (!locationResult.isSuccessful) {
-        throw new Error(locationResult.error);
-    }
-    const address = locationResult.result.results[0]?.formatted_address;
+    // if (!locationResult.isSuccessful) {
+    //     throw new Error(locationResult.error);
+    // }
+    const address = locationResult.results.filter(r => r.types.some(t => allowedTypes.includes(t)))[0]?.formatted_address;
     if (!address) {
         throw new Error('No address in response for the selected location.');
     }
 
-    return address;
+    const pointWithAddress = { latitude: point.lat, longitude: point.lng, address };
+
+    return pointWithAddress;
 }
 
 const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
-    days: [],
     pointRequestPromise: null,
-    isPointRequested: () => get().pointRequestPromise !== null,
+    requestedPoint: null,
+    isPointRequested: () => {
+        const { pointRequestPromise, requestedPoint } = get();
+        return pointRequestPromise !== null || requestedPoint !== null;
+    },
     requestPointSelectionAsync: () => {
-        const { pointRequestPromise } = get();
+        const { isPointRequested } = get();
 
-        if (pointRequestPromise) {
+        if (isPointRequested()) {
             throw new Error('Point selection is already in progress. Please confirm or cancel the current selection.');
         }
 
@@ -34,9 +41,10 @@ const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
             set({
                 pointRequestPromise: new Promise((innerResolve) => {
                     innerResolve(async (point) => {
-                        const address = await getAddressAsync(point);
+                        const requestedPoint = await getPointWithAddressAsync(point);
 
-                        return resolve({ latitude: point.lat, longitude: point.lng, address });
+                        set({ requestedPoint });
+                        resolve(requestedPoint);
                     });
                 }),
             });
@@ -53,6 +61,14 @@ const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
             resolver(point);
             set({ pointRequestPromise: null });
         });
+    },
+    updateRequestedPointAsync: async (point) => {
+        const requestedPoint = await getPointWithAddressAsync(point);
+
+        set({ requestedPoint });
+    },
+    clearRequestedPoint: () => {
+        set({ requestedPoint: null, pointRequestPromise: null });
     },
 }));
 

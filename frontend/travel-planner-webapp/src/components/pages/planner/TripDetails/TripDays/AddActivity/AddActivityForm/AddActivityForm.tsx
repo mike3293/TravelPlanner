@@ -1,9 +1,10 @@
-import { Alert, Button, Fade, Paper, Popper, TextField } from '@mui/material';
-import { useReducer } from 'react';
+import { Close } from '@mui/icons-material';
+import { Alert, Button, IconButton, TextField, Tooltip } from '@mui/material';
+import { ReactNode, useReducer } from 'react';
 
-import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
+import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
 import { activityInitialState, activityReducer } from './reducer';
 
@@ -11,71 +12,91 @@ import styles from './AddActivityForm.module.scss';
 
 
 export interface AddActivityFormProps {
-    anchorEl: HTMLElement;
+    anchorEl: ReactNode;
     isOpen: boolean;
     onClose: () => void;
     onCreate: (activity: TripDayActivity) => void;
 }
 
-// export interface TripDayActivity {
-//     id: string;
-//     address: string;
-//     latitude: number;
-//     longitude: number;
-//     name: string | null;
-//     description: string | null;
-//     imageUrl: string | null;
-//     duration: Duration | null;
-// }
-export function AddActivityForm({ anchorEl, isOpen, onCreate }: AddActivityFormProps) {
-    const requestPointSelectionAsync = usePointSelectionStoreShallow(s => s.requestPointSelectionAsync);
+export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActivityFormProps) {
+    const [
+        isPointRequested,
+        requestPointSelectionAsync,
+        requestedPoint,
+        clearRequestedPoint,
+    ] = usePointSelectionStoreShallow(s => [
+        s.isPointRequested(),
+        s.requestPointSelectionAsync,
+        s.requestedPoint,
+        s.clearRequestedPoint,
+    ]);
 
     const [state, dispatch] = useReducer(activityReducer, activityInitialState);
 
-    const handleOpen = async () => {
-        const point = await requestPointSelectionAsync();
-
-        dispatch({ type: 'SET_POINT', payload: point });
-    }
-
-
     useOnDidUpdate(() => {
-        if (isOpen) {
-            handleOpen();
+        if (isOpen && !isPointRequested) {
+            requestPointSelectionAsync();
         }
     }, [isOpen]);
 
+    useOnDidUpdate(() => {
+        if (isOpen && requestedPoint) {
+            dispatch({ type: 'SET_POINT', payload: requestedPoint });
+        }
+    }, [requestedPoint]);
+
+    const handleClose = () => {
+        onClose();
+        clearRequestedPoint();
+        dispatch({ type: 'RESET' });
+    }
+
+    const handleCreate = () => {
+        onCreate(state);
+        handleClose();
+    }
+
     return (
-        <Popper open={isOpen} anchorEl={anchorEl} transition>
-            {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={350}>
-                    <Paper className={styles.form}>
-                        <TextField
-                            variant='standard'
-                            label='Name'
-                            value={state.name}
-                            onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
-                            fullWidth
-                        />
-                        {state.address ? (
-                            <>hi</>
-                        ) : (
-                            <Alert severity='warning' className={styles.formLocationWarning}>
-                                Please select location on the map
-                            </Alert>
-                        )}
-                        <Button
-                            className={styles.formButton}
-                            variant='contained'
-                            color='primary'
-                            onClick={() => onCreate(state)}
-                            disabled={!state.name || !state.address}
-                        >
-                            Create activity
-                        </Button>
-                    </Paper>
-                </Fade>
+        <Tooltip
+            open={isOpen}
+            classes={{
+                tooltip: styles.form,
+            }}
+            title={(
+                <>
+                    <IconButton
+                        className={styles.formClose}
+                        onClick={handleClose}
+                    >
+                        <Close />
+                    </IconButton>
+                    <TextField
+                        variant='standard'
+                        label='Name'
+                        value={state.name}
+                        onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
+                        fullWidth
+                    />
+                    {state.address ? (
+                        <>{state.address}</>
+                    ) : (
+                        <Alert severity='warning' className={styles.formLocationWarning}>
+                            Please select location on the map
+                        </Alert>
+                    )}
+                    <Button
+                        className={styles.formButton}
+                        variant='contained'
+                        color='primary'
+                        onClick={handleCreate}
+                        disabled={!state.address}
+                    >
+                        Create activity
+                    </Button>
+                </>
             )}
-        </Popper >
+        >
+            <div className={styles.anchor}>{anchorEl}</div>
+        </Tooltip>
     );
 };

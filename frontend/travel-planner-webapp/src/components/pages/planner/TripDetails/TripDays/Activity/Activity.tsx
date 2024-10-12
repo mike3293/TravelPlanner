@@ -1,4 +1,5 @@
-import { Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
+import { HighlightOff } from '@mui/icons-material';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
@@ -14,12 +15,12 @@ export function Activity({ activity, onDelete }: ActivityProps) {
     return (
         <div className={styles.activity}>
             <Typography>{activity.name}</Typography>
-            <button
-                type='button'
+            <IconButton
+                className={styles.activityDelete}
                 onClick={onDelete}
             >
-                X
-            </button>
+                <HighlightOff />
+            </IconButton>
         </div>
     );
 };

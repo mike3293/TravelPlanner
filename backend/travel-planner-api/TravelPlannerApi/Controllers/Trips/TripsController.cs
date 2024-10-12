@@ -66,6 +66,15 @@ public class TripsController : ControllerBase
             Name = model.Name,
             StartDate = model.StartDate,
             EndDate = model.EndDate,
+            Days = Enumerable.Range(0, (model.EndDate - model.StartDate).Days + 1)
+                .Select(offset => new Domain.TripDay
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    Date = model.StartDate.AddDays(offset),
+                    Name = $"Day {offset + 1}",
+                    Activities = [],
+                })
+                .ToList(),
         };
 
         await _tripsRepository.CreateAsync(trip);

@@ -1,31 +1,39 @@
-import { Moment } from 'moment';
+import { Duration } from 'moment';
+
+import { PointWithAddress } from 'src/context/pointSelectionStore/types';
+import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
 
-export interface TripState {
-    tripName: string;
-    startDate: Moment | null;
-    endDate: Moment | null;
-}
+export type Action =
+    | { type: 'SET_NAME'; payload: string }
+    | { type: 'SET_POINT'; payload: PointWithAddress }
+    | { type: 'SET_DESCRIPTION'; payload: string | null }
+    | { type: 'SET_IMAGE_URL'; payload: string | null }
+    | { type: 'SET_DURATION'; payload: Duration | null };
 
-export type TripAction =
-    | { type: 'SET_TRIP_NAME'; payload: string }
-    | { type: 'SET_START_DATE'; payload: Moment | null }
-    | { type: 'SET_END_DATE'; payload: Moment | null };
-
-export const tripInitialState: TripState = {
-    tripName: '',
-    startDate: null,
-    endDate: null,
+export const activityInitialState: TripDayActivity = {
+    id: '',
+    address: '',
+    latitude: 0,
+    longitude: 0,
+    name: '',
+    description: '',
+    imageUrl: '',
+    duration: null,
 };
 
-export const tripReducer = (state: TripState, action: TripAction): TripState => {
-    switch (action.type) {
-        case 'SET_TRIP_NAME':
-            return { ...state, tripName: action.payload };
-        case 'SET_START_DATE':
-            return { ...state, startDate: action.payload };
-        case 'SET_END_DATE':
-            return { ...state, endDate: action.payload };
+export const activityReducer = (state: TripDayActivity, { type, payload }: Action): TripDayActivity => {
+    switch (type) {
+        case 'SET_NAME':
+            return { ...state, name: payload };
+        case 'SET_POINT':
+            return { ...state, ...payload };
+        case 'SET_DESCRIPTION':
+            return { ...state, description: payload };
+        case 'SET_IMAGE_URL':
+            return { ...state, imageUrl: payload };
+        case 'SET_DURATION':
+            return { ...state, duration: payload };
         default:
             return state;
     }

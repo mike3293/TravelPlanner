@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, DraggableProvided, Droppable, DroppableProvided, DropResult } from 'react-beautiful-dnd';
 
 import { TripDay } from 'src/services/trips/TripDay';
+import { getUniqueId } from 'src/components/utils/getUniqueId';
 
 import { Activity } from './Activity';
 import { TripDayContainer } from './TripDayContainer';
+import { AddActivity } from './AddActivity';
 
 import styles from './TripDays.module.scss';
 
@@ -43,25 +44,6 @@ const move = (
     return result;
 };
 
-// const grid = 8;
-
-// const getItemStyle = (
-//     isDragging: boolean,
-//     draggableStyle: React.CSSProperties | undefined
-// ): React.CSSProperties => ({
-//     userSelect: 'none',
-//     padding: grid * 2,
-//     margin: `0 0 ${grid}px 0`,
-//     background: isDragging ? 'lightgreen' : 'grey',
-//     ...draggableStyle
-// });
-
-// const getListStyle = (isDraggingOver: boolean): React.CSSProperties => ({
-//     background: isDraggingOver ? 'lightblue' : 'lightgrey',
-//     padding: grid,
-//     width: 250
-// });
-
 
 export interface TripDaysProps {
     days: TripDay[];
@@ -99,10 +81,9 @@ export function TripDays({ days, setDays }: TripDaysProps) {
             <DragDropContext onDragEnd={onDragEnd}>
                 {days.map((day) => (
                     <Droppable key={day.id} droppableId={day.id}>
-                        {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+                        {(provided: DroppableProvided) => (
                             <div
                                 ref={provided.innerRef}
-                                // style={getListStyle(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
                                 <TripDayContainer day={day}>
@@ -112,15 +93,11 @@ export function TripDays({ days, setDays }: TripDaysProps) {
                                             draggableId={item.id}
                                             index={index}
                                         >
-                                            {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
+                                            {(provided: DraggableProvided) => (
                                                 <div
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
-                                                // style={getItemStyle(
-                                                //     snapshot.isDragging,
-                                                //     provided.draggableProps.style
-                                                // )}
                                                 >
                                                     <Activity
                                                         activity={item}
@@ -134,14 +111,20 @@ export function TripDays({ days, setDays }: TripDaysProps) {
                                             )}
                                         </Draggable>
                                     ))}
-                                    {/* <AddActivity /> */}
                                     {provided.placeholder}
+                                    <AddActivity
+                                        className={styles.daysAddActivity}
+                                        onCreate={(activity) => {
+                                            const newState = [...days];
+                                            newState.find(d => d.id === day.id)!.activities.push({ ...activity, id: getUniqueId() });
+                                            setDays(newState);
+                                        }}
+                                    />
                                 </TripDayContainer>
                             </div>
                         )}
                     </Droppable>
                 ))}
-                {/* <AddDay /> */}
             </DragDropContext>
         </div>
     );

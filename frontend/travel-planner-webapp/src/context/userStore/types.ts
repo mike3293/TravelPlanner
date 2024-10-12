@@ -1,4 +1,4 @@
 export interface IUserStore {
-  accessToken?: string;
-  resetUser: () => void;
+    accessToken?: string;
+    resetUser: () => void;
 }

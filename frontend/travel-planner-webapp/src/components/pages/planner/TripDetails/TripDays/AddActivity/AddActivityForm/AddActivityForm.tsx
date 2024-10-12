@@ -1,82 +1,81 @@
+import { Alert, Button, Fade, Paper, Popper, TextField } from '@mui/material';
 import { useReducer } from 'react';
-import { TextField, Button, Dialog, DialogContent, Alert } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import { useQueryClient } from 'react-query';
 
-import { useMutation } from 'src/components/hooks/useMutation';
-import { tripsService } from 'src/config/services';
-import { TripInfo } from 'src/services/trips/TripInfo';
-import { DateFormat } from 'src/config/dateFormats';
+import { TripDayActivity } from 'src/services/trips/TripDayActivity';
+import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
+import { usePointSelectionStore } from 'src/context/pointSelectionStore';
 
-import { tripInitialState, tripReducer } from './reducer';
+import { activityInitialState, activityReducer } from './reducer';
 
 import styles from './AddActivityForm.module.scss';
 
 
 export interface AddActivityFormProps {
+    anchorEl: HTMLElement;
+    isOpen: boolean;
     onClose: () => void;
+    onCreate: (activity: TripDayActivity) => void;
 }
 
-export function AddActivityForm({ onClose }: AddActivityFormProps) {
-    const queryClient = useQueryClient();
-    const { mutate: create, isLoading, error } = useMutation(() => tripsService.createTripAsync({
-        name: state.tripName,
-        startDate: state.startDate!,
-        endDate: state.endDate!,
-    }), {
-        onSuccess: (data) => {
-            const queryData: TripInfo[] = queryClient.getQueryData('getTrips')!;
+// export interface TripDayActivity {
+//     id: string;
+//     address: string;
+//     latitude: number;
+//     longitude: number;
+//     name: string | null;
+//     description: string | null;
+//     imageUrl: string | null;
+//     duration: Duration | null;
+// }
+export function AddActivityForm({ anchorEl, isOpen, onCreate }: AddActivityFormProps) {
+    const requestPointSelectionAsync = usePointSelectionStore(s => s.requestPointSelectionAsync);
 
-            queryClient.setQueryData('getTrips', [
-                ...queryData,
-                data
-            ]);
+    const [state, dispatch] = useReducer(activityReducer, activityInitialState);
 
-            onClose();
-        },
-    });
+    const handleOpen = async () => {
+        const point = await requestPointSelectionAsync();
 
-    const [state, dispatch] = useReducer(tripReducer, tripInitialState);
+        dispatch({ type: 'SET_POINT', payload: point });
+    }
+
+
+    useOnDidUpdate(() => {
+        if (isOpen) {
+            handleOpen();
+        }
+    }, [isOpen]);
 
     return (
-        <Dialog open onClose={onClose}>
-            <DialogContent className={styles.form}>
-                <TextField
-                    label='Trip Name'
-                    variant='standard'
-                    fullWidth
-                    value={state.tripName}
-                    onChange={(e) => dispatch({ type: 'SET_TRIP_NAME', payload: e.target.value })}
-                />
-
-                <DatePicker
-                    label='Start Date'
-                    slotProps={{ textField: { variant: 'standard' } }}
-                    format={DateFormat.Date}
-                    value={state.startDate}
-                    onChange={(date) => dispatch({ type: 'SET_START_DATE', payload: date })}
-                    maxDate={state.endDate ?? undefined}
-                />
-
-                <DatePicker
-                    label='End Date'
-                    slotProps={{ textField: { variant: 'standard' } }}
-                    format={DateFormat.Date}
-                    value={state.endDate}
-                    onChange={(date) => dispatch({ type: 'SET_END_DATE', payload: date })}
-                    minDate={state.startDate ?? undefined}
-                />
-                {error && <Alert severity='error'>{error}</Alert>}
-                <Button
-                    className={styles.formButton}
-                    variant='contained'
-                    color='primary'
-                    onClick={create}
-                    disabled={isLoading || !state.tripName || !state.startDate || !state.endDate}
-                >
-                    Create Trip
-                </Button>
-            </DialogContent>
-        </Dialog >
+        <Popper open={isOpen} anchorEl={anchorEl} transition>
+            {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                    <Paper className={styles.form}>
+                        <TextField
+                            variant='standard'
+                            label='Name'
+                            value={state.name}
+                            onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
+                            fullWidth
+                        />
+                        {state.address ? (
+                            <>hi</>
+                        ) : (
+                            <Alert severity='warning' className={styles.formLocationWarning}>
+                                Please select location on the map
+                            </Alert>
+                        )}
+                        <Button
+                            className={styles.formButton}
+                            variant='contained'
+                            color='primary'
+                            onClick={() => onCreate(state)}
+                            disabled={!state.name || !state.address}
+                        >
+                            Create activity
+                        </Button>
+                    </Paper>
+                </Fade>
+            )}
+        </Popper >
     );
 };

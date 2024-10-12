@@ -13,8 +13,6 @@ export interface TripDayContainerProps {
 }
 
 export function TripDayContainer({ day, children }: TripDayContainerProps) {
-    console.log('day.date', day.date);
-    console.log('day.date', day);
     return (
         <Card className={styles.day}>
             <CardContent className={styles.dayContent}>

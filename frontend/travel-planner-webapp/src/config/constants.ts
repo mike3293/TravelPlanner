@@ -11,6 +11,7 @@ const constants = {
         '\u003ca href=\'https://www.openstreetmap.org/copyright\' target=\'_blank\'\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e',
     API_URL: process.env.REACT_APP_API_URL!,
     GEOCODER_API_URL: process.env.REACT_APP_GEOCODER_API_URL!,
+    GEOCODER_API_KEY: process.env.REACT_APP_GEOCODER_API_KEY!,
 };
 
 console.log('Config check');

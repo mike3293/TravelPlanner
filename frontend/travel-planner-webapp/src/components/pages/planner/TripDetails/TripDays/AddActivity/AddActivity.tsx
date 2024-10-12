@@ -1,6 +1,10 @@
-import { useState } from 'react';
-import { Card, CardContent } from '@mui/material';
-import { AddCircleOutline } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
+import { Button } from '@mui/material';
+import { useRef, useState } from 'react';
+import classNames from 'classnames';
+
+import { TripDayActivity } from 'src/services/trips/TripDayActivity';
+import { usePointSelectionStore } from 'src/context/pointSelectionStore';
 
 import { AddActivityForm } from './AddActivityForm';
 
@@ -9,21 +13,35 @@ import styles from './AddActivity.module.scss';
 
 export interface AddActivityProps {
     className?: string;
+    onCreate: (activity: TripDayActivity) => void;
 }
 
-export function AddActivity() {
+export function AddActivity({ className, onCreate }: AddActivityProps) {
+    const isPointRequested = usePointSelectionStore(s => s.isPointRequested());
+
     const [isAdding, setIsAdding] = useState(false);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     return (
         <>
-            <Card className={styles.card} onClick={() => setIsAdding(true)}>
-                <CardContent className={styles.cardContent}>
-                    <AddCircleOutline className={styles.cardIcon} />
-                </CardContent>
-            </Card>
-            {isAdding && (
-                <AddActivityForm onClose={() => setIsAdding(false)} />
-            )}
+            <Button
+                ref={buttonRef}
+                className={classNames(className, styles.add)}
+                onClick={() => setIsAdding(true)}
+                disabled={isPointRequested}
+            >
+                <Add />
+                Add activity
+            </Button>
+            <AddActivityForm
+                anchorEl={buttonRef.current!}
+                onCreate={(a) => {
+                    onCreate(a);
+                    setIsAdding(false);
+                }}
+                isOpen={isAdding}
+                onClose={() => setIsAdding(false)}
+            />
         </>
     );
 };

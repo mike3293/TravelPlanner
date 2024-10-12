@@ -1,13 +1,21 @@
 .trip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
     gap: 24px;
+
+    &Header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
 }
 
 .fields {
     display: flex;
     gap: 16px;
+
+    margin-top: 8px;
 
     &Field {
         display: flex;

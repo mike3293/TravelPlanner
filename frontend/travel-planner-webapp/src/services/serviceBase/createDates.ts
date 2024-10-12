@@ -6,7 +6,7 @@ export function createDates(obj: any): any {
         return obj.map(createDates);
     }
 
-    if (typeof obj === 'object') {
+    if (!!obj && typeof obj === 'object') {
         const updatedObj = { ...obj };
         for (const key in obj) {
             if (updatedObj.hasOwnProperty(key) && key.toLowerCase().endsWith('date')) {

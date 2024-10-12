@@ -31,6 +31,7 @@ public static class TripsCreator
         {
             Id = day.Id,
             Date = day.Date,
+            Name = day.Name,
             Activities = day.Activities.Select(CreateFrom).ToList(),
         };
     }

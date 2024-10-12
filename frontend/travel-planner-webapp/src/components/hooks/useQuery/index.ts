@@ -18,6 +18,9 @@ export function useQuery<T>(
                 throw result.error;
             }
         },
-        options,
+        {
+            refetchOnWindowFocus: false,
+            ...options,
+        },
     );
 }

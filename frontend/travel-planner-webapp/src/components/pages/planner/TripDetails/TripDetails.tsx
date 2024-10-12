@@ -7,6 +7,11 @@ import { Spinner } from 'src/components/atoms/Spinner';
 import styles from './TripDetails.module.scss';
 import { DateFormat } from 'src/config/dateFormats';
 import { Moment } from 'moment';
+import { useCallback } from 'react';
+import { useQueryClient } from 'react-query';
+import { Trip } from 'src/services/trips/Trip';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { TripDays } from './TripDays';
 
 const renderDateField = (label: string, date: Moment) => (
     <div className={styles.fieldsField}>
@@ -15,8 +20,12 @@ const renderDateField = (label: string, date: Moment) => (
     </div>
 );
 
+
+
 export function TripDetails() {
     const { tripId } = useParams();
+
+    const queryClient = useQueryClient();
 
     // useQuery with trip details
     const { data, error, isLoading } = useQuery(
@@ -31,11 +40,22 @@ export function TripDetails() {
 
     return (
         <div className={styles.trip}>
-            <Typography variant='h4'>{data.name}</Typography>
-            <div className={styles.fields}>
-                {renderDateField('Start', data.startDate)}
-                {renderDateField('End', data.endDate)}
+            <div className={styles.tripHeader}>
+                <Typography variant='h4'>{data.name}</Typography>
+                <div className={styles.fields}>
+                    {renderDateField('Start', data.startDate)}
+                    {renderDateField('End', data.endDate)}
+                </div>
             </div>
+            <TripDays
+                days={data.days}
+                setDays={(days) => {
+                    queryClient.setQueryData(['trip', tripId], {
+                        ...data,
+                        days,
+                    });
+                }}
+            />
         </div>
     );
 };

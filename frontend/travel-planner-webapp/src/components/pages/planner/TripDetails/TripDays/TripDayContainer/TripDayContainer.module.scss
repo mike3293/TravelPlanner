@@ -1,0 +1,14 @@
+.day {
+    width: 300px;
+    height: 100%;
+    min-height: 200px;
+
+    &Header {
+        margin-bottom: 8px;
+    }
+
+    &Content {
+        display: grid;
+        gap: 8px;
+    }
+}

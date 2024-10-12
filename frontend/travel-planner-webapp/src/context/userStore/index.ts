@@ -16,4 +16,4 @@ export const useUserStore = create<IUserStore>()(
         }),
         { name: 'user-storage' },
     ),
-)
+);

@@ -3,7 +3,7 @@ import { useReducer } from 'react';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
-import { usePointSelectionStore } from 'src/context/pointSelectionStore';
+import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 
 import { activityInitialState, activityReducer } from './reducer';
 
@@ -28,7 +28,7 @@ export interface AddActivityFormProps {
 //     duration: Duration | null;
 // }
 export function AddActivityForm({ anchorEl, isOpen, onCreate }: AddActivityFormProps) {
-    const requestPointSelectionAsync = usePointSelectionStore(s => s.requestPointSelectionAsync);
+    const requestPointSelectionAsync = usePointSelectionStoreShallow(s => s.requestPointSelectionAsync);
 
     const [state, dispatch] = useReducer(activityReducer, activityInitialState);
 

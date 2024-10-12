@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
-import { usePointSelectionStore } from 'src/context/pointSelectionStore';
+import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 
 import { AddActivityForm } from './AddActivityForm';
 
@@ -17,7 +17,7 @@ export interface AddActivityProps {
 }
 
 export function AddActivity({ className, onCreate }: AddActivityProps) {
-    const isPointRequested = usePointSelectionStore(s => s.isPointRequested());
+    const isPointRequested = usePointSelectionStoreShallow(s => s.isPointRequested());
 
     const [isAdding, setIsAdding] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);

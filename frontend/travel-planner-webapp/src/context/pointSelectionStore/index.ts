@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 
 import { geocodingService } from 'src/config/services';
 
@@ -18,7 +19,7 @@ const getAddressAsync = async (point: L.LatLng) => {
     return address;
 }
 
-export const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
+const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
     days: [],
     pointRequestPromise: null,
     isPointRequested: () => get().pointRequestPromise !== null,
@@ -54,3 +55,7 @@ export const usePointSelectionStore = create<IPointSelectionStore>((set, get) =>
         });
     },
 }));
+
+export function usePointSelectionStoreShallow<U>(selector: (store: IPointSelectionStore) => U): U {
+    return usePointSelectionStore(useShallow<IPointSelectionStore, U>(selector));
+}

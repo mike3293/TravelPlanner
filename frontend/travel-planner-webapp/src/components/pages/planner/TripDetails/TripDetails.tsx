@@ -1,13 +1,12 @@
 import { Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
 import { Moment } from 'moment';
-import { useQueryClient } from 'react-query';
+import { useParams } from 'react-router-dom';
 
-import { tripsService } from 'src/config/services';
-import { useQuery } from 'src/components/hooks/useQuery';
 import { Spinner } from 'src/components/atoms/Spinner';
+import { useQuery } from 'src/components/hooks/useQuery';
 import { DateFormat } from 'src/config/dateFormats';
-import { usePointsStoreShallow } from 'src/context/pointsStore';
+import { tripsService } from 'src/config/services';
+import { usePointsStoreShallow } from 'src/context/pointStore';
 
 import { TripDays } from './TripDays';
 

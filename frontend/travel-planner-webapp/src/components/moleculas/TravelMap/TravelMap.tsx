@@ -1,15 +1,17 @@
-import { forwardRef, useCallback, useState } from 'react';
+import L, { LatLng } from 'leaflet';
+import { useRef } from 'react';
 import {
     MapContainer,
     Marker,
     useMapEvents,
 } from 'react-leaflet';
 import VectorTileLayer from 'react-leaflet-vector-tile-layer';
-import L, { LatLng } from 'leaflet';
 
+import { useOnDidMount } from 'src/components/hooks/useOnDidMount';
+import { mapResizeEventEmitter } from 'src/components/utils/events';
 import constants from 'src/config/constants';
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
-import { usePointsStoreShallow } from 'src/context/pointsStore';
+import { usePointsStoreShallow } from 'src/context/pointStore';
 
 
 L.Icon.Default.imagePath = `${window.location.origin}/images/leaflet/`;
@@ -25,8 +27,7 @@ const AddLocation = ({ addLocation }: { addLocation: (latlng: LatLng) => void })
     return null;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function TravelMapInner(_: any, ref: React.Ref<L.Map>) {
+export function TravelMap() {
     const days = usePointsStoreShallow(s => s.days);
     const [
         isPointRequested,
@@ -40,17 +41,19 @@ function TravelMapInner(_: any, ref: React.Ref<L.Map>) {
         s.updateRequestedPointAsync,
     ]);
 
-    const [locations, setLocations] = useState<{ name: string; lat: number; lng: number }[]>([]);
+    const mapRef = useRef<L.Map>(null);
 
-    const handleAddLocation = useCallback((latlng: LatLng) => {
-        const name = `Location ${locations.length + 1}`;
-        const newLocation = { name, lat: latlng.lat, lng: latlng.lng };
-        setLocations([...locations, newLocation]);
-        confirmPointSelection(latlng);
-    }, [confirmPointSelection, locations]);
+    useOnDidMount(() => {
+        const handleResize = () => mapRef.current?.invalidateSize();
+        mapResizeEventEmitter.subscribe(handleResize);
+
+        return () => {
+            mapResizeEventEmitter.unsubscribe(handleResize);
+        };
+    });
 
     return (
-        <MapContainer ref={ref} center={[35.6586, 139.7454]} zoom={5} style={{ height: '100%', width: '100%' }}>
+        <MapContainer ref={mapRef} center={[35.6586, 139.7454]} zoom={5} style={{ height: '100%', width: '100%' }}>
             <VectorTileLayer
                 styleUrl={constants.VECTOR_MAP_STYLE_URL}
                 attribution={constants.VECTOR_MAP_ATTRIBUTION}
@@ -75,11 +78,8 @@ function TravelMapInner(_: any, ref: React.Ref<L.Map>) {
                 />
             )}
             {isPointRequested && (
-                <AddLocation addLocation={handleAddLocation} />
+                <AddLocation addLocation={confirmPointSelection} />
             )}
         </MapContainer>
     );
 };
-
-const TravelMap = forwardRef(TravelMapInner);
-export { TravelMap };

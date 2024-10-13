@@ -1,77 +1,25 @@
-import React, { useState, useRef, useCallback, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import classNames from 'classnames';
 import { IconButton } from '@mui/material';
-import debounce from 'lodash/debounce';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import 'leaflet/dist/leaflet.css';
 
 import { TravelMap } from 'src/components/moleculas/TravelMap';
-import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
+
+import { useTravelDashboardResize } from './useTravelDashboardResize';
 
 import styles from './TravelDashboard.module.scss';
 
 
 export function TravelDashboard({ children }: PropsWithChildren) {
-    const [leftPaneWidth, setLeftPaneWidth] = useState(1200);
-    const [isDragging, setIsDragging] = useState(false);
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const mapRef = useRef<L.Map>(null);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleResize = useCallback(debounce(() => {
-        if (mapRef.current) {
-            mapRef.current.invalidateSize();
-        }
-    }, 600), []);
-
-    useOnDidUpdate(() => {
-        handleResize();
-    }, [leftPaneWidth]);
-
-    const handleMouseDown = () => {
-        setIsDragging(true);
-    };
-
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-        if (!isDragging || !containerRef.current) return;
-
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const newLeftPaneWidth = e.clientX - containerRect.left;
-
-        // Ensure the left pane doesn't get too large
-        if (newLeftPaneWidth < containerRect.width) {
-            setLeftPaneWidth(newLeftPaneWidth);
-        }
-    };
-
-    const handleExpandLeftPane = () => {
-        setLeftPaneWidth(containerRef.current?.offsetWidth ?? 0);
-    };
-
-    const handleExpandRightPane = () => {
-        setLeftPaneWidth(0);
-    };
-
-    // Attach mousemove and mouseup listeners when dragging starts
-    useOnDidUpdate(() => {
-        if (isDragging) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-        } else {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        }
-
-        return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
-    }, [isDragging]);
+    const {
+        leftPaneWidth,
+        isDragging,
+        handleMouseDown,
+        handleExpandRightPane,
+        handleExpandLeftPane,
+        containerRef,
+    } = useTravelDashboardResize();
 
     return (
         <div className={styles.container} ref={containerRef}>
@@ -95,7 +43,7 @@ export function TravelDashboard({ children }: PropsWithChildren) {
                 </IconButton>
             </div>
             <div className={classNames(!isDragging && styles.transition)} style={{ width: `calc(100% - ${leftPaneWidth + 40}px)` }}>
-                <TravelMap ref={mapRef} />
+                <TravelMap />
             </div>
         </div>
     );

@@ -1,12 +1,16 @@
 import { Button } from '@mui/material';
 import L from 'leaflet';
 import { useCallback, useMemo } from 'react';
-import { Marker } from 'react-leaflet';
+import { Marker, useMap } from 'react-leaflet';
 
+import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
+import { usePrevious } from 'src/components/hooks/usePrevious';
 import { downloadFile } from 'src/components/utils/downloadFile';
 import { generateKmzAsync } from 'src/components/utils/generateKmz';
 import { getMarkerUrl } from 'src/components/utils/getMarkerUrl';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
+
+import styles from './TravelDays.module.scss';
 
 
 const getIcon = (iconUrl: string) => {
@@ -17,7 +21,22 @@ const getIcon = (iconUrl: string) => {
 }
 
 export function TravelDays() {
+    const map = useMap();
+
     const [trip] = usePointsStoreShallow(s => [s.trip]);
+
+    const prevTripId = usePrevious(trip?.id);
+
+    useOnDidUpdate(() => {
+        if (!trip || trip.id === prevTripId) {
+            return;
+        }
+        const firstActivity = trip.days.find(d => d.activities.length !== 0)?.activities[0];
+        if (!firstActivity) {
+            return;
+        }
+        map.flyTo([firstActivity.latitude, firstActivity.longitude], 6);
+    }, [trip]);
 
     const markerPoints = useMemo(() => {
         return trip?.days.flatMap((d, dInd) => d.activities.map((a, aInd) => ({
@@ -34,12 +53,12 @@ export function TravelDays() {
     return (
         <>
             <Button
-                sx={{ position: 'absolute', right: 10, top: 10, zIndex: 1000 }}
+                className={styles.exportButton}
                 variant='contained'
                 onClick={exportKmz}
                 disabled={markerPoints.length === 0}
             >
-                Export
+                Export KMZ
             </Button>
             {markerPoints.map(({ activity, iconUrl }) => (
                 <Marker

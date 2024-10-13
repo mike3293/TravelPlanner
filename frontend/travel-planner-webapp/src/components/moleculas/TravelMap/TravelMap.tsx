@@ -26,7 +26,7 @@ export function TravelMap() {
     });
 
     return (
-        <MapContainer ref={mapRef} center={[35.6586, 139.7454]} zoom={5} style={{ height: '100%', width: '100%' }}>
+        <MapContainer ref={mapRef} center={[35.6586, 139.7454]} zoom={3} style={{ height: '100%', width: '100%' }}>
             <VectorTileLayer
                 styleUrl={constants.VECTOR_MAP_STYLE_URL}
                 attribution={constants.VECTOR_MAP_ATTRIBUTION}

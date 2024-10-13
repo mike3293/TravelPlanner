@@ -79,14 +79,14 @@ export function TripDays({ days, onDaysChange }: TripDaysProps) {
     return (
         <div className={styles.days}>
             <DragDropContext onDragEnd={onDragEnd}>
-                {days.map((day) => (
+                {days.map((day, dInd) => (
                     <Droppable key={day.id} droppableId={day.id}>
                         {(provided: DroppableProvided) => (
                             <div
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
                             >
-                                <TripDayContainer day={day}>
+                                <TripDayContainer day={day} index={dInd}>
                                     {day.activities.map((item, index) => (
                                         <Draggable
                                             key={item.id}

@@ -5,6 +5,17 @@
 
     &Header {
         margin-bottom: 8px;
+
+        &Title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &Icon {
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
 
     &Content {

@@ -63,7 +63,10 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
     }
 
     const handleCreate = () => {
-        onCreate(state);
+        onCreate({
+            ...state,
+            name: state.name || state.address,
+        });
         handleClose();
     }
 

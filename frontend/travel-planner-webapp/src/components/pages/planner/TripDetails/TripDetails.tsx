@@ -6,7 +6,7 @@ import { Spinner } from 'src/components/atoms/Spinner';
 import { useQuery } from 'src/components/hooks/useQuery';
 import { DateFormat } from 'src/config/dateFormats';
 import { tripsService } from 'src/config/services';
-import { usePointsStoreShallow } from 'src/context/pointStore';
+import { usePointsStoreShallow } from 'src/context/pointsStore';
 
 import { TripDays } from './TripDays';
 
@@ -24,7 +24,7 @@ const renderDateField = (label: string, date: Moment) => (
 export function TripDetails() {
     const { tripId } = useParams();
 
-    const [days, onDaysChange] = usePointsStoreShallow(s => [s.days, s.setDays]);
+    const [days, onDaysChange, onTripChange] = usePointsStoreShallow(s => [s.days, s.setDays, s.setTrip]);
 
     // useQuery with trip details
     const { data, error, isLoading } = useQuery(
@@ -32,7 +32,7 @@ export function TripDetails() {
         () => tripsService.getTripAsync(tripId!),
         {
             onSuccess: (trip) => {
-                onDaysChange(trip.days);
+                onTripChange(trip);
             }
         }
     );

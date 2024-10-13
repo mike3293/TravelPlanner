@@ -1,26 +1,53 @@
+import { Button } from '@mui/material';
 import L from 'leaflet';
+import { useCallback, useMemo } from 'react';
 import { Marker } from 'react-leaflet';
 
-import { usePointsStoreShallow } from 'src/context/pointStore';
+import { downloadFile } from 'src/components/utils/downloadFile';
+import { generateKmzAsync } from 'src/components/utils/generateKmz';
+import { getMarkerUrl } from 'src/components/utils/getMarkerUrl';
+import { usePointsStoreShallow } from 'src/context/pointsStore';
 
 
-const icon = new L.Icon({
-    iconUrl: `${window.location.origin}/images/markers/number-15.png`,
-    iconSize: new L.Point(25, 25),
-    // className: 'leaflet-div-icon'
-});
-
+const getIcon = (iconUrl: string) => {
+    return new L.Icon({
+        iconUrl,
+        iconSize: new L.Point(32, 32),
+    });
+}
 
 export function TravelDays() {
-    const days = usePointsStoreShallow(s => s.days);
+    const [days, tripName] = usePointsStoreShallow(s => [s.days, s.tripName]);
+
+    const markerPoints = useMemo(() => {
+        return days.flatMap((d, dInd) => d.activities.map((a, aInd) => (
+            {
+                activity: a,
+                iconUrl: getMarkerUrl(dInd, `number-${aInd + 1}`),
+            }
+        )));
+    }, [days]);
+
+    const exportKmz = useCallback(async () => {
+        const kmz = await generateKmzAsync(markerPoints);
+        downloadFile(`${tripName}.kmz`, kmz);
+    }, [markerPoints, tripName]);
 
     return (
         <>
-            {days.flatMap(d => d.activities).map(a => (
+            <Button
+                sx={{ position: 'absolute', right: 10, top: 10, zIndex: 1000 }}
+                variant='contained'
+                onClick={exportKmz}
+                disabled={markerPoints.length === 0}
+            >
+                Export
+            </Button>
+            {markerPoints.map(({ activity, iconUrl }) => (
                 <Marker
-                    key={a.id}
-                    position={[a.latitude, a.longitude]}
-                    icon={icon}
+                    key={activity.id}
+                    position={[activity.latitude, activity.longitude]}
+                    icon={getIcon(iconUrl)}
                 />
             ))}
         </>

@@ -56,7 +56,7 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: 8,
-                    padding: '10px 20px',
+                    padding: '6px 12px',
                     fontSize: 16,
                 },
                 containedPrimary: {

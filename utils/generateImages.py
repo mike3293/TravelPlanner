@@ -1,6 +1,19 @@
+import os
 from PIL import Image, ImageDraw, ImageFont
 
-def generate_number_image(text, fileName, font_path="arialbd.ttf", size=(44, 44), font_size=20, border_width=4):
+colors = {
+    'purple': (154, 119, 230),
+    'amber': (255, 145, 0),
+    'teal': (0, 150, 136),
+    'green': (124, 179, 66),
+    'indigo': (92, 107, 192)
+}
+
+def generate_number_image(text, fileName, folder, circle_color, font_path="arialbd.ttf", size=(44, 44), font_size=20, border_width=4):
+    # Create the subfolder if it doesn't exist
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
     # Create an image with transparency and a slightly larger size for padding
     img = Image.new('RGBA', size, (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -14,8 +27,8 @@ def generate_number_image(text, fileName, font_path="arialbd.ttf", size=(44, 44)
     # Draw the outer white circle (border)
     d.ellipse([center[0] - outer_radius, center[1] - outer_radius, center[0] + outer_radius, center[1] + outer_radius], fill=(255, 255, 255))
 
-    # Draw the inner purple circle
-    d.ellipse([center[0] - inner_radius, center[1] - inner_radius, center[0] + inner_radius, center[1] + inner_radius], fill=(154, 119, 230))
+    # Draw the inner colored circle
+    d.ellipse([center[0] - inner_radius, center[1] - inner_radius, center[0] + inner_radius, center[1] + inner_radius], fill=circle_color)
 
     # Load the bold font
     font = ImageFont.truetype(font_path, font_size)
@@ -31,11 +44,15 @@ def generate_number_image(text, fileName, font_path="arialbd.ttf", size=(44, 44)
     # Add the number to the image with white color
     d.text(position, text, font=font, fill=(255, 255, 255))  # White text
 
-    # Save the image
-    img.save(f'images/{fileName}.png')
+    # Save the image in the specified folder
+    img.save(f'{folder}/{fileName}.png')
 
-# Generate images for numbers 1 to 100
-for i in range(1, 100):
-    generate_number_image(str(i), f'number-{i}')
 
-generate_number_image('', 'empty')
+# Generate images for numbers 1 to 100 in 4 different color folders
+for color_name, color_value in colors.items():
+    for i in range(1, 100):
+        generate_number_image(str(i), f'number-{i}', folder=f'images/{color_name}', circle_color=color_value)
+
+# Generate an empty image for each color folder
+for color_name, color_value in colors.items():
+    generate_number_image('', 'empty', folder=f'images/{color_name}', circle_color=color_value)

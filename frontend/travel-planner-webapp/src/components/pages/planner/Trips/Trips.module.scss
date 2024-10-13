@@ -1,10 +1,18 @@
 .trips {
     display: grid;
+    grid-template-rows: auto 1fr;
     gap: 16px;
+    height: 100%;
 }
 
 .tripList {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
+    padding: 8px;
+    margin: -8px;
+    height: 100%;
+    align-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

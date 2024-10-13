@@ -30,7 +30,7 @@ export function TripDetails() {
 
     const [trip, onDaysChange, onTripChange] = usePointsStoreShallow(s => [s.trip, s.setDays, s.setTrip]);
 
-    const { data, error, isLoading } = useQuery(
+    const { data, error, isFetching } = useQuery(
         ['trip', tripId],
         () => tripsService.getTripAsync(tripId!),
         {
@@ -48,7 +48,7 @@ export function TripDetails() {
         }
     }, [trip]);
 
-    if (isLoading) return <Spinner />;
+    if (isFetching) return <Spinner />;
     if (error) return <Typography>{error}</Typography>;
 
     if (!trip) return null;

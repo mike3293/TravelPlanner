@@ -7,19 +7,19 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-/* Track */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    border-radius: 6px;
+    background-color: var(--mui-palette-grey-300);
+    border: 1px solid var(--mui-palette-primary-light);
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #cacaca;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #b3b3b3;
+    border-radius: 8px;
+    background-color: var(--mui-palette-grey-500);
 }
 
 .leaflet-attribution-flag {

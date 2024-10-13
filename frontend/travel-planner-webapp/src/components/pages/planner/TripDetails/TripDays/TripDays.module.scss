@@ -1,6 +1,11 @@
 .days {
     display: flex;
     flex-wrap: wrap;
+    overflow-y: auto;
+    height: 100%;
+    align-content: flex-start;
+    padding: 8px;
+    margin: -8px;
     gap: 16px;
 
     &AddActivity {

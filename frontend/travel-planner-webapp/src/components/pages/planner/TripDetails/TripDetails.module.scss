@@ -1,6 +1,8 @@
 .trip {
     display: grid;
+    grid-template-rows: auto 1fr;
     gap: 24px;
+    height: 100%;
 
     &Header {
         display: flex;

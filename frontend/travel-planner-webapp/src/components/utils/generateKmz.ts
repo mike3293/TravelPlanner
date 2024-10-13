@@ -80,5 +80,5 @@ export const generateKmzAsync = async (markers: Marker[]) => {
     // Generate the KMZ (zip) file
     const kmzBlob = await zip.generateAsync({ type: 'blob' });
 
-    return kmzBlob;
+    return new Blob([kmzBlob], { type: 'application/vnd.google-earth.kmz' });
 };

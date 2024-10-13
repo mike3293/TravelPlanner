@@ -17,21 +17,21 @@ const getIcon = (iconUrl: string) => {
 }
 
 export function TravelDays() {
-    const [days, tripName] = usePointsStoreShallow(s => [s.days, s.tripName]);
+    const [trip] = usePointsStoreShallow(s => [s.trip]);
 
     const markerPoints = useMemo(() => {
-        return days.flatMap((d, dInd) => d.activities.map((a, aInd) => (
+        return trip?.days.flatMap((d, dInd) => d.activities.map((a, aInd) => (
             {
                 activity: a,
                 iconUrl: getMarkerUrl(dInd, `number-${aInd + 1}`),
             }
-        )));
-    }, [days]);
+        ))) ?? [];
+    }, [trip]);
 
     const exportKmz = useCallback(async () => {
         const kmz = await generateKmzAsync(markerPoints);
-        downloadFile(`${tripName}.kmz`, kmz);
-    }, [markerPoints, tripName]);
+        downloadFile(`${trip?.name}.kmz`, kmz);
+    }, [markerPoints, trip?.name]);
 
     return (
         <>

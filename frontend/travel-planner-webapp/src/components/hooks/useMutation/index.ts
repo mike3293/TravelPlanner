@@ -3,7 +3,7 @@ import { useMutation as useMutationBase, UseMutationOptions } from 'react-query'
 import { ServiceResult } from 'src/services/serviceBase/ServiceResult';
 
 
-export function useMutation<T, V>(
+export function useMutation<T, V = void>(
     mutate: (variables: V) => Promise<ServiceResult<T>>,
     options?: Omit<UseMutationOptions<T, string, V>, 'mutationFn'>
 ) {

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using TravelPlannerApi.Configuration;
 using TravelPlannerApi.Domain.Repositories;
 using TravelPlannerApi.Services.Auth;
+using TravelPlannerApi.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

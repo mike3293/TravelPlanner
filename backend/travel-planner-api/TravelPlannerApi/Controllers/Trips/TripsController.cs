@@ -49,7 +49,7 @@ public class TripsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<TripInfo>> Post([FromBody] CreateTripModel model)
+    public async Task<ActionResult<TripInfo>> Post([FromBody] TripUpdate model)
     {
         var userId = User.GetUserId();
 
@@ -66,21 +66,79 @@ public class TripsController : ControllerBase
             Name = model.Name,
             StartDate = model.StartDate,
             EndDate = model.EndDate,
-            Days = Enumerable.Range(0, (model.EndDate - model.StartDate).Days + 1)
+            // dates is DateOnly, create days accordingly
+            Days = Enumerable.Range(0, (model.EndDate.DayNumber - model.StartDate.DayNumber) + 1)
                 .Select(offset => new Domain.TripDay
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     Date = model.StartDate.AddDays(offset),
-                    Name = $"Day {offset + 1}",
-                    Activities = [],
+                    Activities = new List<Domain.TripDayActivity>(),
                 })
                 .ToList(),
+            //Days = Enumerable.Range(0, (model.EndDate - model.StartDate).Days + 1)
+            //    .Select(offset => new Domain.TripDay
+            //    {
+            //        Id = Guid.NewGuid().ToString("N"),
+            //        Date = model.StartDate.AddDays(offset),
+            //        Name = $"Day {offset + 1}",
+            //        Activities = [],
+            //    })
+            //    .ToList(),
         };
 
         await _tripsRepository.CreateAsync(trip);
         var tripDataContract = TripsCreator.CreateFrom(trip);
 
         return tripDataContract;
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Trip>> Put(string id, [FromBody] TripUpdate model)
+    {
+        var userId = User.GetUserId();
+
+        var trip = await _tripDetailsRepository.GetByIdAsync(id);
+        if (trip == null || trip.UserId != userId)
+        {
+            return NotFound();
+        }
+
+        trip.Name = model.Name;
+        trip.StartDate = model.StartDate;
+        trip.EndDate = model.EndDate;
+        UpdateDays();
+
+        await _tripsRepository.UpdateAsync(trip.Id, trip);
+        var tripDataContract = TripsCreator.CreateWithDetailsFrom(trip);
+
+        return tripDataContract;
+
+        void UpdateDays()
+        {
+            var newDays = Enumerable.Range(0, (model.EndDate.DayNumber - model.StartDate.DayNumber) + 1)
+                .Select(offset => model.StartDate.AddDays(offset))
+                .ToList();
+
+            var unassignedActivities = new List<Domain.TripDayActivity>();
+
+            var daysToRemove = trip.Days.Where(d => !newDays.Contains(d.Date)).ToList();
+            foreach (var day in daysToRemove)
+            {
+                trip.Days.Remove(day);
+                unassignedActivities.AddRange(day.Activities);
+            }
+            var daysToAdd = newDays.Where(d => trip.Days.All(day => day.Date != d)).Select(d => new Domain.TripDay
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Date = d,
+                Activities = new List<Domain.TripDayActivity>(),
+            });
+
+            trip.Days = trip.Days.Concat(daysToAdd).OrderBy(d => d.Date).ToList();
+
+            var firstDay = trip.Days.First();
+            firstDay.Activities = firstDay.Activities.Concat(unassignedActivities).ToList();
+        }
     }
 
     [HttpDelete("{id}")]

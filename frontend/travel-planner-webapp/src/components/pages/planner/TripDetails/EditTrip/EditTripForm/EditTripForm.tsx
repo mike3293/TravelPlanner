@@ -5,38 +5,34 @@ import { useQueryClient } from 'react-query';
 
 import { useMutation } from 'src/components/hooks/useMutation';
 import { tripsService } from 'src/config/services';
-import { TripInfo } from 'src/services/trips/TripInfo';
 import { DateFormat } from 'src/config/dateFormats';
+import { Trip } from 'src/services/trips/Trip';
 
-import { tripInitialState, tripReducer } from './reducer';
+import { tripReducer } from './reducer';
 
-import styles from './AddTripForm.module.scss';
+import styles from './EditTripForm.module.scss';
 
 
-export interface AddTripFormProps {
+export interface EditTripFormProps {
+    trip: Trip;
     onClose: () => void;
 }
 
-export function AddTripForm({ onClose }: AddTripFormProps) {
+export function EditTripForm({ trip, onClose }: EditTripFormProps) {
     const queryClient = useQueryClient();
-    const { mutate: create, isLoading, error } = useMutation(() => tripsService.createTripAsync({
-        name: state.tripName,
-        startDate: state.startDate!,
-        endDate: state.endDate!,
+    const { mutate: create, isLoading, error } = useMutation(() => tripsService.updateTripAsync(trip.id, {
+        name: state.name,
+        startDate: state.startDate,
+        endDate: state.endDate,
     }), {
         onSuccess: (data) => {
-            const queryData: TripInfo[] = queryClient.getQueryData('getTrips')!;
-
-            queryClient.setQueryData('getTrips', [
-                ...queryData,
-                data
-            ]);
+            queryClient.setQueryData(['trip', trip.id], data);
 
             onClose();
         },
     });
 
-    const [state, dispatch] = useReducer(tripReducer, tripInitialState);
+    const [state, dispatch] = useReducer(tripReducer, trip);
 
     return (
         <Dialog open onClose={onClose}>
@@ -45,7 +41,7 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
                     label='Trip Name'
                     variant='standard'
                     fullWidth
-                    value={state.tripName}
+                    value={state.name}
                     onChange={(e) => dispatch({ type: 'SET_TRIP_NAME', payload: e.target.value })}
                 />
 
@@ -72,9 +68,9 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
                     variant='contained'
                     color='primary'
                     onClick={() => create()}
-                    disabled={isLoading || !state.tripName || !state.startDate || !state.endDate}
+                    disabled={isLoading || !state.name || !state.startDate || !state.endDate}
                 >
-                    Create Trip
+                    Update Trip
                 </Button>
             </DialogContent>
         </Dialog >

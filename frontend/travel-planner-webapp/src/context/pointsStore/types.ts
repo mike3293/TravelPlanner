@@ -3,8 +3,7 @@ import { TripDay } from 'src/services/trips/TripDay';
 
 
 export interface IPointsStore {
-    tripName: string;
-    days: TripDay[];
+    trip: Trip | null;
     setTrip: (trip: Trip) => void;
     setDays: (days: TripDay[]) => void;
 }

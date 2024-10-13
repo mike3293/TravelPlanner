@@ -1,9 +1,7 @@
 ﻿namespace TravelPlannerApi.Models.Trips;
 
-public class TripInfo
+public class TripUpdate
 {
-    public required string Id { get; set; }
-
     public required string Name { get; set; }
 
     public DateOnly StartDate { get; set; } 

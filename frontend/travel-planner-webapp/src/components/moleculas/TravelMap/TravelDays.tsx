@@ -20,12 +20,10 @@ export function TravelDays() {
     const [trip] = usePointsStoreShallow(s => [s.trip]);
 
     const markerPoints = useMemo(() => {
-        return trip?.days.flatMap((d, dInd) => d.activities.map((a, aInd) => (
-            {
-                activity: a,
-                iconUrl: getMarkerUrl(dInd, `number-${aInd + 1}`),
-            }
-        ))) ?? [];
+        return trip?.days.flatMap((d, dInd) => d.activities.map((a, aInd) => ({
+            activity: a,
+            iconUrl: getMarkerUrl(dInd, aInd),
+        }))) ?? [];
     }, [trip]);
 
     const exportKmz = useCallback(async () => {

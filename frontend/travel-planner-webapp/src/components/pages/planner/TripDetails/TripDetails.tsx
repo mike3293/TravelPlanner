@@ -35,17 +35,16 @@ export function TripDetails() {
         () => tripsService.getTripAsync(tripId!),
         {
             onSuccess: (trip) => {
-                console.debug('TripDetails: onSuccess', trip);
                 onTripChange(trip);
             },
         },
     );
 
-    const { mutate } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
+    const { mutate: updateDays } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
 
     useOnDidUpdate(() => {
         if (trip?.days && trip.days !== data?.days) {
-            mutate(trip?.days);
+            updateDays(trip.days);
         }
     }, [trip]);
 

@@ -1,5 +1,8 @@
-import { Typography } from '@mui/material';
+import { Save } from '@mui/icons-material';
+import { Fade, Typography } from '@mui/material';
+import debounce from 'lodash/debounce';
 import { Moment } from 'moment';
+import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Spinner } from 'src/components/atoms/Spinner';
@@ -40,11 +43,12 @@ export function TripDetails() {
         },
     );
 
-    const { mutate: updateDays } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
-
+    const { mutate: updateDays, isLoading: isUpdating } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const updateDaysDebounced = useCallback(debounce((days: TripDay[]) => updateDays(days), 3000), []);
     useOnDidUpdate(() => {
         if (trip?.days && trip.days !== data?.days) {
-            updateDays(trip.days);
+            updateDaysDebounced(trip.days);
         }
     }, [trip]);
 
@@ -56,11 +60,16 @@ export function TripDetails() {
     return (
         <div className={styles.trip}>
             <div className={styles.tripHeader}>
-                <Typography variant='h4'>{trip.name}</Typography>
+                <div className={styles.tripHeaderTitle}>
+                    <Typography variant='h4'>{trip.name}</Typography>
+                    <EditTrip trip={trip} />
+                    <Fade in={isUpdating} timeout={{ exit: 5000 }} >
+                        <Save color='primary' />
+                    </Fade>
+                </div>
                 <div className={styles.fields}>
                     {renderDateField('Start', trip.startDate)}
                     {renderDateField('End', trip.endDate)}
-                    <EditTrip trip={trip} />
                 </div>
             </div>
             <TripDays

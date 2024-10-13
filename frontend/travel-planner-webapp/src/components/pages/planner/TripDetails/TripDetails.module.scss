@@ -10,11 +10,18 @@
         align-items: center;
         justify-content: space-between;
         gap: 16px;
+
+        &Title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
     }
 }
 
 .fields {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
     align-items: center;
 

@@ -1,8 +1,13 @@
 @import "~leaflet/dist/leaflet.css";
 @import '~react-toastify/dist/ReactToastify.css';
 
+html {
+    overscroll-behavior: none;
+}
+
 html,
-body {
+body,
+#root {
     height: 100%;
 }
 

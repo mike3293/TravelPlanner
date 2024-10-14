@@ -5,6 +5,7 @@ import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 import { mapResizeEventEmitter } from 'src/components/utils/events';
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
+import { useMobile } from 'src/components/hooks/useMedia';
 
 import { activityInitialState, activityReducer } from './reducer';
 
@@ -16,6 +17,8 @@ export interface AddActivityFormProps {
 }
 
 export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFormProps) {
+    const isMobile = useMobile();
+
     const [
         isPointRequested,
         requestPointSelectionAsync,
@@ -36,6 +39,9 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
     const popperRef = useRef<any>(null);
 
     useOnDidMount(() => {
+        if (isMobile) {
+            return;
+        }
         const handleResize = () => popperRef.current?.update();
         mapResizeEventEmitter.subscribe(handleResize);
 
@@ -71,6 +77,7 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
     }
 
     return {
+        isMobile,
         popperRef,
         state,
         dispatch,

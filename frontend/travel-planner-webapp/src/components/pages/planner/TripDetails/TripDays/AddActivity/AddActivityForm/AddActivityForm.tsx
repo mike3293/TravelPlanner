@@ -1,6 +1,7 @@
 import { Close } from '@mui/icons-material';
 import { Alert, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import { ReactNode } from 'react';
+import classNames from 'classnames';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
@@ -18,6 +19,7 @@ export interface AddActivityFormProps {
 
 export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActivityFormProps) {
     const {
+        isMobile,
         popperRef,
         state,
         dispatch,
@@ -29,10 +31,18 @@ export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActi
         <Tooltip
             open={isOpen}
             classes={{
+                popper: classNames(isMobile && styles.formMobile),
                 tooltip: styles.form,
             }}
             PopperProps={{
                 popperRef: popperRef,
+                modifiers: [isMobile ? {
+                    name: 'computeStyles',
+                    options: {
+                        gpuAcceleration: false,
+                        adaptive: false,
+                    }
+                } : {}],
             }}
             title={(
                 <>

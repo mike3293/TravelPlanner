@@ -3,6 +3,14 @@
     display: grid;
     gap: 16px;
 
+    &Mobile {
+        position: absolute;
+        bottom: 10px;
+        left: 20px !important;
+        top: unset !important;
+        right: unset !important;
+    }
+
     &Button {
         margin-top: 8px;
     }

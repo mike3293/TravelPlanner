@@ -1,4 +1,6 @@
 .days {
+    $root: &;
+
     display: flex;
     flex-wrap: wrap;
     overflow-y: auto;
@@ -7,6 +9,12 @@
     padding: 8px;
     margin: -8px;
     gap: 16px;
+
+    &Mobile {
+        #{$root}Droppable {
+            width: 100%;
+        }
+    }
 
     &AddActivity {
         justify-self: flex-start;

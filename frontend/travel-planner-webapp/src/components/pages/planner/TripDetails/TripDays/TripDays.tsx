@@ -1,7 +1,9 @@
 import { DragDropContext, Draggable, DraggableProvided, Droppable, DroppableProvided, DropResult } from 'react-beautiful-dnd';
+import classNames from 'classnames';
 
 import { TripDay } from 'src/services/trips/TripDay';
 import { getUniqueId } from 'src/components/utils/getUniqueId';
+import { useMobile } from 'src/components/hooks/useMedia';
 
 import { Activity } from './Activity';
 import { TripDayContainer } from './TripDayContainer';
@@ -51,6 +53,8 @@ export interface TripDaysProps {
 }
 
 export function TripDays({ days, onDaysChange }: TripDaysProps) {
+    const isMobile = useMobile();
+
     const onDragEnd = (result: DropResult) => {
         const { source, destination } = result;
 
@@ -77,13 +81,14 @@ export function TripDays({ days, onDaysChange }: TripDaysProps) {
     };
 
     return (
-        <div className={styles.days}>
+        <div className={classNames(styles.days, isMobile && styles.daysMobile)}>
             <DragDropContext onDragEnd={onDragEnd}>
                 {days.map((day, dInd) => (
                     <Droppable key={day.id} droppableId={day.id}>
                         {(provided: DroppableProvided) => (
                             <div
                                 ref={provided.innerRef}
+                                className={styles.daysDroppable}
                                 {...provided.droppableProps}
                             >
                                 <TripDayContainer day={day} index={dInd}>

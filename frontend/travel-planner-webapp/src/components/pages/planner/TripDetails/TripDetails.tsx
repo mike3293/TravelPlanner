@@ -1,6 +1,6 @@
 import { Save } from '@mui/icons-material';
 import { Fade, Typography } from '@mui/material';
-import debounce from 'lodash/debounce';
+import throttle from 'lodash/throttle';
 import { Moment } from 'moment';
 import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
@@ -45,7 +45,7 @@ export function TripDetails() {
 
     const { mutate: updateDays, isLoading: isUpdating } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const updateDaysDebounced = useCallback(debounce((days: TripDay[]) => updateDays(days), 3000), []);
+    const updateDaysDebounced = useCallback(throttle((days: TripDay[]) => updateDays(days), 3000), []);
     useOnDidUpdate(() => {
         if (trip?.days && trip.days !== data?.days) {
             updateDaysDebounced(trip.days);

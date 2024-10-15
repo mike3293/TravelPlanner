@@ -1,0 +1,13 @@
+.search {
+    position: absolute !important;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+    width: 300px;
+
+    &Input {
+        background: var(--mui-palette-common-white);
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+    }
+}

@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import L from 'leaflet';
 import { useCallback, useMemo } from 'react';
 import { Marker, useMap } from 'react-leaflet';
+import classNames from 'classnames';
 
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 import { usePrevious } from 'src/components/hooks/usePrevious';
@@ -9,6 +10,7 @@ import { downloadFile } from 'src/components/utils/downloadFile';
 import { generateKmzAsync } from 'src/components/utils/generateKmz';
 import { getMarkerUrl } from 'src/components/utils/getMarkerUrl';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
+import { useMobile } from 'src/components/hooks/useMedia';
 
 import styles from './TravelDays.module.scss';
 
@@ -21,6 +23,8 @@ const getIcon = (iconUrl: string) => {
 }
 
 export function TravelDays() {
+    const isMobile = useMobile();
+
     const map = useMap();
 
     const [trip] = usePointsStoreShallow(s => [s.trip]);
@@ -35,7 +39,11 @@ export function TravelDays() {
         if (!firstActivity) {
             return;
         }
-        map.flyTo([firstActivity.latitude, firstActivity.longitude], 6);
+        if (isMobile) {
+            map.setView([firstActivity.latitude, firstActivity.longitude], 6);
+        } else {
+            map.flyTo([firstActivity.latitude, firstActivity.longitude], 6);
+        }
     }, [trip]);
 
     const markerPoints = useMemo(() => {
@@ -53,7 +61,7 @@ export function TravelDays() {
     return (
         <>
             <Button
-                className={styles.exportButton}
+                className={classNames(styles.exportButton, isMobile && styles.exportButtonMobile)}
                 variant='contained'
                 onClick={exportKmz}
                 disabled={markerPoints.length === 0}

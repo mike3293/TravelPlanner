@@ -23,12 +23,12 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
         isPointRequested,
         requestPointSelectionAsync,
         requestedPoint,
-        clearRequestedPoint,
+        confirmPointSelection,
     ] = usePointSelectionStoreShallow(s => [
-        s.isPointRequested(),
-        s.requestPointSelectionAsync,
+        s.isPointRequested,
+        s.requestPointSelection,
         s.requestedPoint,
-        s.clearRequestedPoint,
+        s.confirmPointSelection,
     ]);
 
     const [state, dispatch] = useReducer(activityReducer, activityInitialState);
@@ -64,7 +64,7 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
 
     const handleClose = () => {
         onClose();
-        clearRequestedPoint();
+        confirmPointSelection();
         dispatch({ type: 'RESET' });
     }
 

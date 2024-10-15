@@ -5,11 +5,10 @@ export interface PointWithAddress {
 }
 
 export interface IPointSelectionStore {
-    pointRequestPromise: Promise<IPointSelectionStore['confirmPointSelection']> | null;
+    isPointRequested: boolean;
     requestedPoint: PointWithAddress | null;
-    isPointRequested: () => boolean;
-    requestPointSelectionAsync: () => Promise<PointWithAddress>;
-    confirmPointSelection: (point: L.LatLng) => void;
+    requestPointSelection: () => void;
+    updateRequestedPoint: (point: PointWithAddress) => void;
     updateRequestedPointAsync: (point: L.LatLng) => void;
-    clearRequestedPoint: () => void;
+    confirmPointSelection: () => void;
 }

@@ -17,7 +17,7 @@ export interface AddActivityProps {
 }
 
 export function AddActivity({ className, onCreate }: AddActivityProps) {
-    const isPointRequested = usePointSelectionStoreShallow(s => s.isPointRequested());
+    const [isPointRequested] = usePointSelectionStoreShallow(s => [s.isPointRequested]);
 
     const [isAdding, setIsAdding] = useState(false);
 

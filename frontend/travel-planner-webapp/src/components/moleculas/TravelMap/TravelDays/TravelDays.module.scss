@@ -3,4 +3,11 @@
     right: 10px;
     top: 10px;
     z-index: 1000;
+
+    &Mobile {
+        bottom: 25px;
+        left: 10px;
+        top: unset;
+        right: unset;
+    }
 }

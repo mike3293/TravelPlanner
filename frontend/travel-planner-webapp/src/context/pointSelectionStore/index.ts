@@ -6,14 +6,27 @@ import { geocodingService } from 'src/config/services';
 import { IPointSelectionStore, PointWithAddress } from './types';
 
 
-const allowedTypes = ['street_address', 'route'];
+const prefferedTypes = ['street_address', 'route'];
+const getAddressFromResult = (results: google.maps.GeocoderResult[]) => {
+    if (!results.length) {
+        return null;
+    }
+
+    const result = prefferedTypes
+        .map(type => results.find(r => r.types.includes(type)))
+        .find(r => r) ?? results[0];
+    const address = result?.formatted_address;
+
+    return address;
+}
 
 const getPointWithAddressAsync = async (point: L.LatLng): Promise<PointWithAddress> => {
     const locationResult = await geocodingService.getAddressAsync(point.lat, point.lng);
-    // if (!locationResult.isSuccessful) {
-    //     throw new Error(locationResult.error);
-    // }
-    const address = locationResult.results.filter(r => r.types.some(t => allowedTypes.includes(t)))[0]?.formatted_address;
+    if (!locationResult.isSuccessful) {
+        throw new Error(locationResult.error);
+    }
+
+    const address = getAddressFromResult(locationResult.result.results);
     if (!address) {
         throw new Error('No address in response for the selected location.');
     }
@@ -24,51 +37,28 @@ const getPointWithAddressAsync = async (point: L.LatLng): Promise<PointWithAddre
 }
 
 const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
-    pointRequestPromise: null,
+    isPointRequested: false,
     requestedPoint: null,
-    isPointRequested: () => {
-        const { pointRequestPromise, requestedPoint } = get();
-        return pointRequestPromise !== null || requestedPoint !== null;
-    },
-    requestPointSelectionAsync: () => {
+    requestPointSelection: () => {
         const { isPointRequested } = get();
 
-        if (isPointRequested()) {
+        if (isPointRequested) {
             throw new Error('Point selection is already in progress. Please confirm or cancel the current selection.');
         }
 
-        return new Promise((resolve) => {
-            set({
-                pointRequestPromise: new Promise((innerResolve) => {
-                    innerResolve(async (point) => {
-                        const requestedPoint = await getPointWithAddressAsync(point);
-
-                        set({ requestedPoint });
-                        resolve(requestedPoint);
-                    });
-                }),
-            });
-        });
+        // const requestedPoint = await getPointWithAddressAsync(point);
+        set({ isPointRequested: true });
     },
-    confirmPointSelection: async (point) => {
-        const { pointRequestPromise } = get();
-
-        if (!pointRequestPromise) {
-            throw new Error('No point selection is in progress.');
-        }
-
-        pointRequestPromise.then((resolver) => {
-            resolver(point);
-            set({ pointRequestPromise: null });
-        });
+    updateRequestedPoint: (requestedPoint) => {
+        set({ requestedPoint });
     },
     updateRequestedPointAsync: async (point) => {
         const requestedPoint = await getPointWithAddressAsync(point);
 
         set({ requestedPoint });
     },
-    clearRequestedPoint: () => {
-        set({ requestedPoint: null, pointRequestPromise: null });
+    confirmPointSelection: () => {
+        set({ requestedPoint: null, isPointRequested: false });
     },
 }));
 

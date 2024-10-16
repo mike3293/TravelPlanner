@@ -65,6 +65,11 @@ export function ActivityForm({
                         tabIndex={-1}
                         value={state.name}
                         onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
+                        onKeyDown={(e) => {
+                            if (state.address && e.key === 'Enter') {
+                                handleSave();
+                            }
+                        }}
                         fullWidth
                     />
                     {state.address ? (

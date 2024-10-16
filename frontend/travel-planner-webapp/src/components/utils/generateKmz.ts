@@ -1,18 +1,25 @@
 import JSZip from 'jszip';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
+import { TripDay } from 'src/services/trips/TripDay';
+import { DateFormat } from 'src/config/dateFormats';
 
 import { getMarkerNameWithFolder } from './getMarkerUrl';
 
+
+export interface MarkerGroup {
+    day: TripDay;
+    activities: Marker[];
+}
 
 interface Marker {
     activity: TripDayActivity;
     iconUrl: string;
 }
 
-export const generateKmzAsync = async (markers: Marker[]) => {
+export const generateKmzAsync = async (markerGroups: MarkerGroup[]) => {
     // Fetch all icons in parallel
-    const iconPromises = markers.map(async ({ iconUrl }) => {
+    const iconPromises = markerGroups.flatMap(g => g.activities).map(async ({ iconUrl }) => {
         const iconName = getMarkerNameWithFolder(iconUrl) || '';
         const iconBlob = await fetch(iconUrl).then((res) => res.blob());
 
@@ -36,38 +43,52 @@ export const generateKmzAsync = async (markers: Marker[]) => {
     const documentElement = xmlDoc.createElement('Document');
     kmlElement.appendChild(documentElement);
 
-    markers.forEach(async (marker) => {
-        const [iconName, iconBlob] = iconsMap[marker.iconUrl];
-        zip.file(iconName, iconBlob);
+    markerGroups.forEach(({ day, activities }) => {
+        // Add a folder for each day
+        const folderElement = xmlDoc.createElement('Folder');
 
-        // Create Placemark element
-        const placemarkElement = xmlDoc.createElement('Placemark');
+        // Set folder name to day's name and date
+        const folderNameElement = xmlDoc.createElement('name');
+        folderNameElement.textContent = `${day.date.format(DateFormat.Date)}${day.name ? ` (${day.name})` : ''}`;
+        folderElement.appendChild(folderNameElement);
 
-        // Name
-        const nameElement = xmlDoc.createElement('name');
-        nameElement.textContent = marker.activity.name;
-        placemarkElement.appendChild(nameElement);
+        // Append each activity to the day's folder
+        activities.forEach((marker) => {
+            const [iconName, iconBlob] = iconsMap[marker.iconUrl];
+            zip.file(iconName, iconBlob);
 
-        // Point
-        const pointElement = xmlDoc.createElement('Point');
-        const coordinatesElement = xmlDoc.createElement('coordinates');
-        coordinatesElement.textContent = `${marker.activity.longitude},${marker.activity.latitude}`;
-        pointElement.appendChild(coordinatesElement);
-        placemarkElement.appendChild(pointElement);
+            // Create Placemark element
+            const placemarkElement = xmlDoc.createElement('Placemark');
 
-        // Style with Icon
-        const styleElement = xmlDoc.createElement('Style');
-        const iconStyleElement = xmlDoc.createElement('IconStyle');
-        const iconElement = xmlDoc.createElement('Icon');
-        const hrefElement = xmlDoc.createElement('href');
-        hrefElement.textContent = iconName;
-        iconElement.appendChild(hrefElement);
-        iconStyleElement.appendChild(iconElement);
-        styleElement.appendChild(iconStyleElement);
-        placemarkElement.appendChild(styleElement);
+            // Name
+            const nameElement = xmlDoc.createElement('name');
+            nameElement.textContent = marker.activity.name;
+            placemarkElement.appendChild(nameElement);
 
-        // Append Placemark to Document
-        documentElement.appendChild(placemarkElement);
+            // Point
+            const pointElement = xmlDoc.createElement('Point');
+            const coordinatesElement = xmlDoc.createElement('coordinates');
+            coordinatesElement.textContent = `${marker.activity.longitude},${marker.activity.latitude}`;
+            pointElement.appendChild(coordinatesElement);
+            placemarkElement.appendChild(pointElement);
+
+            // Style with Icon
+            const styleElement = xmlDoc.createElement('Style');
+            const iconStyleElement = xmlDoc.createElement('IconStyle');
+            const iconElement = xmlDoc.createElement('Icon');
+            const hrefElement = xmlDoc.createElement('href');
+            hrefElement.textContent = iconName;
+            iconElement.appendChild(hrefElement);
+            iconStyleElement.appendChild(iconElement);
+            styleElement.appendChild(iconStyleElement);
+            placemarkElement.appendChild(styleElement);
+
+            // Append Placemark to the Folder
+            folderElement.appendChild(placemarkElement);
+        });
+
+        // Append Folder to Document
+        documentElement.appendChild(folderElement);
     });
 
     // Serialize XML to string

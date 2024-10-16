@@ -55,6 +55,7 @@ export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActi
                     <TextField
                         variant='standard'
                         label='Name'
+                        tabIndex={-1}
                         value={state.name}
                         onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
                         fullWidth

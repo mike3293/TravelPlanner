@@ -46,17 +46,20 @@ export function TravelDays() {
         }
     }, [trip]);
 
-    const markerPoints = useMemo(() => {
-        return trip?.days.flatMap((d, dInd) => d.activities.map((a, aInd) => ({
-            activity: a,
-            iconUrl: getMarkerUrl(dInd, aInd),
-        }))) ?? [];
+    const markerPointGroups = useMemo(() => {
+        return trip?.days.map((d, dInd) => ({
+            day: d,
+            activities: d.activities.map((a, aInd) => ({
+                activity: a,
+                iconUrl: getMarkerUrl(dInd, aInd),
+            })),
+        })) ?? [];
     }, [trip]);
 
     const exportKmz = useCallback(async () => {
-        const kmz = await generateKmzAsync(markerPoints);
+        const kmz = await generateKmzAsync(markerPointGroups);
         downloadFile(`${trip?.name}.kmz`, kmz);
-    }, [markerPoints, trip?.name]);
+    }, [markerPointGroups, trip?.name]);
 
     return (
         <>
@@ -64,11 +67,11 @@ export function TravelDays() {
                 className={classNames(styles.exportButton, isMobile && styles.exportButtonMobile)}
                 variant='contained'
                 onClick={exportKmz}
-                disabled={markerPoints.length === 0}
+                disabled={markerPointGroups.length === 0}
             >
                 Export KMZ
             </Button>
-            {markerPoints.map(({ activity, iconUrl }) => (
+            {markerPointGroups.flatMap(g => g.activities).map(({ activity, iconUrl }) => (
                 <Marker
                     key={activity.id}
                     position={[activity.latitude, activity.longitude]}

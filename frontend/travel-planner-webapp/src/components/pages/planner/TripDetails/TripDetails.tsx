@@ -62,14 +62,18 @@ export function TripDetails() {
             <div className={styles.tripHeader}>
                 <div className={styles.tripHeaderTitle}>
                     <Typography variant='h4'>{trip.name}</Typography>
-                    <EditTrip trip={trip} />
-                    <Fade in={isUpdating} timeout={{ exit: 5000 }} >
+                    <Fade
+                        className={styles.tripHeaderTitleIcon}
+                        in={isUpdating}
+                        timeout={{ exit: 5000 }}
+                    >
                         <Save color='primary' />
                     </Fade>
                 </div>
                 <div className={styles.fields}>
                     {renderDateField('Start', trip.startDate)}
                     {renderDateField('End', trip.endDate)}
+                    <EditTrip trip={trip} />
                 </div>
             </div>
             <TripDays

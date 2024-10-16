@@ -106,6 +106,11 @@ export function TripDays({ days, onDaysChange }: TripDaysProps) {
                                                 >
                                                     <Activity
                                                         activity={item}
+                                                        onEdit={(activity) => {
+                                                            const newState = [...days];
+                                                            newState.find(d => d.id === day.id)!.activities[index] = activity;
+                                                            onDaysChange(newState);
+                                                        }}
                                                         onDelete={() => {
                                                             const newState = [...days];
                                                             newState.find(d => d.id === day.id)!.activities.splice(index, 1);

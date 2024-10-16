@@ -5,27 +5,34 @@ import classNames from 'classnames';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
-import { useAddActivityForm } from './useAddActivityForm';
+import { useActivityForm } from './useActivityForm';
 
-import styles from './AddActivityForm.module.scss';
+import styles from './ActivityForm.module.scss';
 
 
-export interface AddActivityFormProps {
+export interface ActivityFormProps {
+    activity?: TripDayActivity;
     anchorEl: ReactNode;
     isOpen: boolean;
     onClose: () => void;
-    onCreate: (activity: TripDayActivity) => void;
+    onSubmit: (activity: TripDayActivity) => void;
 }
 
-export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActivityFormProps) {
+export function ActivityForm({
+    activity,
+    anchorEl,
+    isOpen,
+    onClose,
+    onSubmit,
+}: ActivityFormProps) {
     const {
         isMobile,
         popperRef,
         state,
         dispatch,
         handleClose,
-        handleCreate,
-    } = useAddActivityForm({ isOpen, onClose, onCreate });
+        handleSave,
+    } = useActivityForm({ activity, isOpen, onClose, onSubmit });
 
     return (
         <Tooltip
@@ -48,7 +55,7 @@ export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActi
                 <>
                     <IconButton
                         className={styles.formClose}
-                        onClick={handleClose}
+                        onClick={() => handleClose()}
                     >
                         <Close />
                     </IconButton>
@@ -71,10 +78,10 @@ export function AddActivityForm({ anchorEl, isOpen, onClose, onCreate }: AddActi
                         className={styles.formButton}
                         variant='contained'
                         color='primary'
-                        onClick={handleCreate}
+                        onClick={handleSave}
                         disabled={!state.address}
                     >
-                        Create activity
+                        Save
                     </Button>
                 </>
             )}

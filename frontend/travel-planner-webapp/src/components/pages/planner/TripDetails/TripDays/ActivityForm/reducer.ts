@@ -10,7 +10,7 @@ export type Action =
     | { type: 'SET_DESCRIPTION'; payload: string | null }
     | { type: 'SET_IMAGE_URL'; payload: string | null }
     | { type: 'SET_DURATION'; payload: Duration | null }
-    | { type: 'RESET'; payload?: never };
+    | { type: 'RESET'; payload: TripDayActivity };
 
 export const activityInitialState: TripDayActivity = {
     id: '',
@@ -36,7 +36,7 @@ export const activityReducer = (state: TripDayActivity, { type, payload }: Actio
         case 'SET_DURATION':
             return { ...state, duration: payload };
         case 'RESET':
-            return { ...activityInitialState };
+            return { ...payload };
         default:
             return state;
     }

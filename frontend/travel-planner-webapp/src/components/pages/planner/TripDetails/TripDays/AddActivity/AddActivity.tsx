@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
-import { AddActivityForm } from './AddActivityForm';
+import { ActivityForm } from '../ActivityForm';
 
 import styles from './AddActivity.module.scss';
 
@@ -22,7 +22,7 @@ export function AddActivity({ className, onCreate }: AddActivityProps) {
     const [isAdding, setIsAdding] = useState(false);
 
     return (
-        <AddActivityForm
+        <ActivityForm
             anchorEl={(
                 <Button
                     className={classNames(className, styles.add)}
@@ -33,7 +33,7 @@ export function AddActivity({ className, onCreate }: AddActivityProps) {
                     Add activity
                 </Button>
             )}
-            onCreate={onCreate}
+            onSubmit={onCreate}
             isOpen={isAdding}
             onClose={() => setIsAdding(false)}
         />

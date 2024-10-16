@@ -39,7 +39,7 @@ const getPointWithAddressAsync = async (point: L.LatLng): Promise<PointWithAddre
 const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
     isPointRequested: false,
     requestedPoint: null,
-    requestPointSelection: () => {
+    requestPointSelection: (requestedPoint) => {
         const { isPointRequested } = get();
 
         if (isPointRequested) {
@@ -47,7 +47,7 @@ const usePointSelectionStore = create<IPointSelectionStore>((set, get) => ({
         }
 
         // const requestedPoint = await getPointWithAddressAsync(point);
-        set({ isPointRequested: true });
+        set({ isPointRequested: true, requestedPoint });
     },
     updateRequestedPoint: (requestedPoint) => {
         set({ requestedPoint });

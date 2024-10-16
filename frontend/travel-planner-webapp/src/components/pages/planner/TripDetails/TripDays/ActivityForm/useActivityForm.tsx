@@ -10,13 +10,14 @@ import { useMobile } from 'src/components/hooks/useMedia';
 import { activityInitialState, activityReducer } from './reducer';
 
 
-export interface AddActivityFormProps {
+export interface ActivityFormProps {
+    activity?: TripDayActivity;
     isOpen: boolean;
     onClose: () => void;
-    onCreate: (activity: TripDayActivity) => void;
+    onSubmit: (activity: TripDayActivity) => void;
 }
 
-export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFormProps) {
+export function useActivityForm({ activity = activityInitialState, isOpen, onClose, onSubmit }: ActivityFormProps) {
     const isMobile = useMobile();
 
     const [
@@ -31,8 +32,7 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
         s.confirmPointSelection,
     ]);
 
-    const [state, dispatch] = useReducer(activityReducer, activityInitialState);
-
+    const [state, dispatch] = useReducer(activityReducer, activity);
 
     // Supressed as mui does not reexport ref type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,7 +52,11 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
 
     useOnDidUpdate(() => {
         if (isOpen && !isPointRequested) {
-            requestPointSelectionAsync();
+            requestPointSelectionAsync(state.address ? {
+                latitude: state.latitude,
+                longitude: state.longitude,
+                address: state.address,
+            } : undefined);
         }
     }, [isOpen]);
 
@@ -62,18 +66,19 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
         }
     }, [requestedPoint]);
 
-    const handleClose = () => {
+    const handleClose = (newActivity?: TripDayActivity) => {
         onClose();
         confirmPointSelection();
-        dispatch({ type: 'RESET' });
+        dispatch({ type: 'RESET', payload: newActivity ?? activity ?? activityInitialState });
     }
 
-    const handleCreate = () => {
-        onCreate({
+    const handleSave = () => {
+        const newActivity = {
             ...state,
             name: state.name || state.address,
-        });
-        handleClose();
+        };
+        onSubmit(newActivity);
+        handleClose(newActivity);
     }
 
     return {
@@ -82,6 +87,6 @@ export function useAddActivityForm({ isOpen, onClose, onCreate }: AddActivityFor
         state,
         dispatch,
         handleClose,
-        handleCreate,
+        handleSave,
     }
 };

@@ -1,4 +1,4 @@
-import { ServiceBase } from '../serviceBase';
+import { ServiceBase, ServiceResult } from '../serviceBase';
 import { UserStoreApi } from '../serviceBase/types';
 
 
@@ -12,23 +12,23 @@ export class AuthService extends ServiceBase {
     }
 
 
-    public async loginAsync(email: string, password: string): Promise<boolean> {
+    public async loginAsync(email: string, password: string): Promise<ServiceResult> {
         const accessTokenResult = await this.post<string>('auth/login', { email, password }, undefined, undefined, { credentials: 'include' });
 
         if (accessTokenResult.isSuccessful) {
             this.store.setState({ accessToken: accessTokenResult.result });
         }
 
-        return accessTokenResult.isSuccessful;
+        return accessTokenResult;
     }
 
-    public async registerAsync(email: string, password: string): Promise<boolean> {
+    public async registerAsync(email: string, password: string): Promise<ServiceResult> {
         const accessTokenResult = await this.post<string>('auth/register', { email, password }, undefined, undefined, { credentials: 'include' });
 
         if (accessTokenResult.isSuccessful) {
             this.store.setState({ accessToken: accessTokenResult.result });
         }
 
-        return accessTokenResult.isSuccessful;
+        return accessTokenResult;
     }
 }

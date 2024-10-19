@@ -1,8 +1,13 @@
-import { Container, Box, Typography, TextField, Alert, Button } from '@mui/material';
+import { Alert, Button, Container, TextField, Typography } from '@mui/material';
 import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router';
 
+import { useMutation } from 'src/components/hooks/useMutation';
+import { ServiceResult } from 'src/services/serviceBase';
+
 import { validateEmail, validatePassword } from './utils';
+
+import styles from './Credentials.module.scss';
 
 
 type FormState = {
@@ -35,7 +40,7 @@ export interface CredentialsProps {
     title: string;
     label: string;
     successRedirectLink: string;
-    authentificateAsync: (email: string, password: string) => Promise<boolean>;
+    authentificateAsync: (email: string, password: string) => Promise<ServiceResult>;
     endAdornment?: React.ReactNode;
 }
 
@@ -44,7 +49,19 @@ export function Credentials({ title, label, successRedirectLink, authentificateA
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const { mutate, isLoading } = useMutation(
+        () => authentificateAsync(state.email, state.password),
+        {
+            onSuccess: () => {
+                navigate(successRedirectLink);
+            },
+            onError: () => {
+                setError('Invalid credentials. Please try again.');
+            }
+        }
+    );
+
+    const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validateEmail(state.email)) {
@@ -57,18 +74,12 @@ export function Credentials({ title, label, successRedirectLink, authentificateA
             return;
         }
 
-        const isSuccessful = await authentificateAsync(state.email, state.password);
-
-        if (isSuccessful) {
-            navigate(successRedirectLink);
-        } else {
-            setError('Invalid credentials. Please try again.');
-        }
+        mutate();
     };
 
     return (
         <Container maxWidth='xs'>
-            <Box mt={8} display='flex' flexDirection='column' alignItems='center'>
+            <div className={styles.credentials}>
                 <Typography component='h1' variant='h5'>
                     {title}
                 </Typography>
@@ -101,17 +112,19 @@ export function Credentials({ title, label, successRedirectLink, authentificateA
                     />
                     {error && <Alert severity='error'>{error}</Alert>}
                     <Button
+                        className={styles.credentialsSubmit}
                         type='submit'
                         fullWidth
                         variant='contained'
                         color='primary'
                         sx={{ mt: 3, mb: 2 }}
+                        disabled={isLoading}
                     >
                         {label}
                     </Button>
                 </form>
                 {endAdornment}
-            </Box>
+            </div>
         </Container>
     );
 };

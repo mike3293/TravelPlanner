@@ -1,4 +1,4 @@
-export class ServiceResult<T> {
+export class ServiceResult<T = unknown> {
     readonly isSuccessful: boolean;
     readonly result: T;
     readonly error: string | undefined;

@@ -54,12 +54,10 @@ export function TravelDays() {
 
     return (
         <>
-            {trip && (
-                <ExportKmz
-                    tripName={trip.name}
-                    markerPointGroups={markerPointGroups}
-                />
-            )}
+            <ExportKmz
+                tripName={trip?.name}
+                markerPointGroups={markerPointGroups}
+            />
             {markerPointGroups.flatMap(g => g.activities).map(({ activity, iconUrl }) => (
                 <Marker
                     key={activity.id}

@@ -12,7 +12,7 @@ import styles from './ExportKmz.module.scss';
 
 
 export interface ExportKmzProps {
-    tripName: string;
+    tripName?: string;
     markerPointGroups: MarkerGroup[];
 }
 

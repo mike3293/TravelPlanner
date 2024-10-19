@@ -12,6 +12,8 @@ import { getMarkerUrl } from 'src/components/utils/getMarkerUrl';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
 import { useMobile } from 'src/components/hooks/useMedia';
 
+import { IntroStep } from '../../IntroJourney';
+
 import styles from './TravelDays.module.scss';
 
 
@@ -65,6 +67,7 @@ export function TravelDays() {
         <>
             <Button
                 className={classNames(styles.exportButton, isMobile && styles.exportButtonMobile)}
+                data-intro-step={IntroStep.ExportKmz}
                 variant='contained'
                 onClick={exportKmz}
                 disabled={markerPointGroups.length === 0}

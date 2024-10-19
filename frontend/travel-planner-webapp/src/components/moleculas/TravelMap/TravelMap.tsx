@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { AttributionControl, MapContainer, ZoomControl } from 'react-leaflet';
 import VectorTileLayer from 'react-leaflet-vector-tile-layer';
 
@@ -21,14 +21,12 @@ export function TravelMap() {
 
     const mapRef = useRef<L.Map>(null);
 
-    useOnDidMount(() => {
-        const handleResize = () => mapRef.current?.invalidateSize();
-        mapResizeEventEmitter.subscribe(handleResize);
+    const handleResize = useCallback(() => mapRef.current?.invalidateSize(), []);
 
-        return () => {
-            mapResizeEventEmitter.unsubscribe(handleResize);
-        };
-    });
+    useOnDidMount(
+        () => mapResizeEventEmitter.subscribe(handleResize),
+        () => mapResizeEventEmitter.unsubscribe(handleResize),
+    );
 
     return (
         <MapContainer

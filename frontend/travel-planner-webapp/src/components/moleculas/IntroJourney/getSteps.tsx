@@ -1,0 +1,128 @@
+import { Step } from 'react-joyride';
+
+import { IntroStep } from './IntroStep';
+
+
+const getStepElementSelector = (step: IntroStep) => `[data-intro-step="${step}"]`;
+
+export const getSteps = (isMobile: boolean) => ([
+    {
+        title: 'Welcome to TravelPlanner!',
+        content: 'This is a step-by-step guide to help you get started.',
+        placement: 'center',
+        disableOverlayClose: true,
+        showSkipButton: true,
+        spotlightPadding: 0,
+        target: 'body',
+    },
+    {
+        title: 'Add trip',
+        content: 'Add your first trip by clicking here.',
+        disableBeacon: true,
+        disableOverlayClose: true,
+        hideFooter: true,
+        spotlightClicks: true,
+        target: getStepElementSelector(IntroStep.AddTrip),
+        data: { needStop: true },
+    },
+    {
+        title: 'Save trip',
+        content: 'Fill details and save your trip.',
+        placement: 'left',
+        disableBeacon: true,
+        disableOverlay: true,
+        hideFooter: true,
+        spotlightClicks: true,
+        target: getStepElementSelector(IntroStep.SaveTrip),
+        data: { needStop: true },
+    },
+    {
+        title: 'Trip edit',
+        content: <>Here you can edit your trip.<br /><b>To add new days you can change dates here.</b></>,
+        disableBeacon: true,
+        disableOverlayClose: true,
+        target: getStepElementSelector(IntroStep.EditTrip),
+    },
+    {
+        title: 'Add trip activity',
+        content: 'Click here to add a new activity to your trip.',
+        disableBeacon: true,
+        disableOverlayClose: true,
+        hideFooter: true,
+        spotlightClicks: true,
+        target: getStepElementSelector(IntroStep.AddTripActivity),
+    },
+    {
+        title: 'Sections resize',
+        content: `Here you can expand the map.${!isMobile ? ' Also separator can be dragged to resize sections.' : ''}`,
+        placement: 'left',
+        disableBeacon: true,
+        disableOverlayClose: true,
+        hideFooter: isMobile,
+        spotlightClicks: isMobile,
+        target: getStepElementSelector(IntroStep.ExpandMap),
+    },
+    {
+        title: 'Select place location',
+        content: <>You can click on the map to add a new place marker. Then you can drag this marker to change the location.<br /><b>Please try to add it!</b></>,
+        disableBeacon: true,
+        disableOverlay: true,
+        hideFooter: true,
+        spotlightPadding: 0,
+        target: getStepElementSelector(IntroStep.AddPlaceMarker),
+        styles: {
+            options: {
+                arrowColor: 'transparent',
+            },
+        },
+    },
+    {
+        title: 'Search place by address',
+        content: 'You can search for a place by address here.',
+        disableBeacon: true,
+        disableOverlayClose: true,
+        target: getStepElementSelector(IntroStep.SearchPlaceByAddress),
+    },
+    {
+        title: 'Save trip activity',
+        content: 'Fill other details if you want and save your activity.',
+        disableBeacon: true,
+        disableOverlayClose: true,
+        hideFooter: true,
+        spotlightClicks: true,
+        target: getStepElementSelector(IntroStep.SaveTripActivity),
+    },
+    {
+        title: 'Export trip to KMZ',
+        content: <>You can export your trip to KMZ format to use it in Google Maps.<br />You&apos;ll find detailed instruction in a dialog that will be opened after export.</>,
+        disableBeacon: true,
+        disableOverlayClose: true,
+        target: getStepElementSelector(IntroStep.ExportKmz),
+    },
+    isMobile && {
+        title: 'Sections resize',
+        content: 'Click here to collapse the map.',
+        placement: 'right',
+        disableBeacon: true,
+        disableOverlayClose: true,
+        hideFooter: true,
+        spotlightClicks: true,
+        target: getStepElementSelector(IntroStep.CollapseMap),
+    },
+    {
+        title: 'Activity manipulations',
+        content: <>You can edit or delete your activity.<br />Also you can drag it to change the order or move to another day.</>,
+        disableBeacon: true,
+        disableOverlayClose: true,
+        spotlightClicks: true,
+        target: getStepElementSelector(IntroStep.ActivityActionDetails),
+    },
+    {
+        title: 'That\'s it!',
+        content: 'You\'re ready to plan your trip!',
+        placement: 'center',
+        disableOverlayClose: true,
+        spotlightPadding: 0,
+        target: 'body',
+    },
+] as Step[]).filter(Boolean);

@@ -1,0 +1,15 @@
+export enum IntroStep {
+    Welcome,
+    AddTrip,
+    SaveTrip,
+    EditTrip,
+    AddTripActivity,
+    ExpandMap,
+    AddPlaceMarker,
+    SearchPlaceByAddress,
+    SaveTripActivity,
+    ExportKmz,
+    CollapseMap,
+    ActivityActionDetails,
+    Final,
+};

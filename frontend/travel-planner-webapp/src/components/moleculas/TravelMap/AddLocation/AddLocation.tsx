@@ -3,6 +3,7 @@ import { Marker, useMapEvents } from 'react-leaflet';
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 
 import { PlaceSearch } from './PlaceSearch';
+import { IntroStep, useIntroJourney } from '../../IntroJourney';
 
 
 export function AddLocation() {
@@ -18,10 +19,13 @@ export function AddLocation() {
         s.updateRequestedPointAsync,
     ]);
 
+    const { nextStep } = useIntroJourney();
+
     useMapEvents({
         click(event: L.LeafletMouseEvent) {
             if (isPointRequested && !requestedPoint) {
                 updateRequestedPointAsync(event.latlng);
+                nextStep();
             }
         }
     });
@@ -32,6 +36,7 @@ export function AddLocation() {
 
     return (
         <>
+            <div data-intro-step={IntroStep.AddPlaceMarker} />
             <PlaceSearch requestedPoint={requestedPoint} onSelect={updateRequestedPoint} />
             {requestedPoint && (
                 <Marker

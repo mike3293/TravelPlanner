@@ -6,6 +6,7 @@ import { mapResizeEventEmitter } from 'src/components/utils/events';
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 import { useMobile } from 'src/components/hooks/useMedia';
+import { useIntroJourney } from 'src/components/moleculas/IntroJourney';
 
 import { activityInitialState, activityReducer } from './reducer';
 
@@ -19,6 +20,8 @@ export interface ActivityFormProps {
 
 export function useActivityForm({ activity = activityInitialState, isOpen, onClose, onSubmit }: ActivityFormProps) {
     const isMobile = useMobile();
+
+    const { nextStep } = useIntroJourney();
 
     const [
         isPointRequested,
@@ -51,12 +54,16 @@ export function useActivityForm({ activity = activityInitialState, isOpen, onClo
     });
 
     useOnDidUpdate(() => {
-        if (isOpen && !isPointRequested) {
-            requestPointSelectionAsync(state.address ? {
-                latitude: state.latitude,
-                longitude: state.longitude,
-                address: state.address,
-            } : undefined);
+        if (isOpen) {
+            dispatch({ type: 'RESET', payload: activity });
+
+            if (!isPointRequested) {
+                requestPointSelectionAsync(activity.address ? {
+                    latitude: activity.latitude,
+                    longitude: activity.longitude,
+                    address: activity.address,
+                } : undefined);
+            }
         }
     }, [isOpen]);
 
@@ -66,10 +73,9 @@ export function useActivityForm({ activity = activityInitialState, isOpen, onClo
         }
     }, [requestedPoint]);
 
-    const handleClose = (newActivity?: TripDayActivity) => {
+    const handleClose = () => {
         onClose();
         confirmPointSelection();
-        dispatch({ type: 'RESET', payload: newActivity ?? activity ?? activityInitialState });
     }
 
     const handleSave = () => {
@@ -78,7 +84,9 @@ export function useActivityForm({ activity = activityInitialState, isOpen, onClo
             name: state.name || state.address,
         };
         onSubmit(newActivity);
-        handleClose(newActivity);
+        handleClose();
+
+        nextStep();
     }
 
     return {

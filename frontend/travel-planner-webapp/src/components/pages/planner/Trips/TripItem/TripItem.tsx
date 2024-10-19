@@ -21,13 +21,11 @@ const renderDateField = (label: string, date: Moment) => (
 );
 
 export function TripItem({ trip: { id, name, startDate, endDate } }: TripItemProps) {
-
-
     return (
         <Link className={styles.link} to={links.tripDetails(id)}>
             <Card className={styles.card}>
                 <CardContent className={styles.cardContent}>
-                    <Typography variant='h5' gutterBottom>{name}</Typography>
+                    <Typography className={styles.cardTitle} variant='h5' gutterBottom>{name}</Typography>
                     <div className={styles.fields}>
                         {renderDateField('Start', startDate)}
                         {renderDateField('End', endDate)}

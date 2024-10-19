@@ -2,6 +2,7 @@ import { IconButton, Typography } from '@mui/material';
 import { HighlightOff } from '@mui/icons-material';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
+import { IntroStep } from 'src/components/moleculas/IntroJourney';
 
 import { EditActivity } from './EditActivity';
 
@@ -16,7 +17,10 @@ export interface ActivityProps {
 
 export function Activity({ activity, onEdit, onDelete }: ActivityProps) {
     return (
-        <div className={styles.activity}>
+        <div
+            className={styles.activity}
+            data-intro-step={IntroStep.ActivityActionDetails}
+        >
             <Typography>{activity.name}</Typography>
             <div>
                 <EditActivity

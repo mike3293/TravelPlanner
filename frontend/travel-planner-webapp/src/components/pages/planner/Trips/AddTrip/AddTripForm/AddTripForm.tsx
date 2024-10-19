@@ -2,11 +2,15 @@ import { useReducer } from 'react';
 import { TextField, Button, Dialog, DialogContent, Alert } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router';
 
 import { useMutation } from 'src/components/hooks/useMutation';
 import { tripsService } from 'src/config/services';
 import { TripInfo } from 'src/services/trips/TripInfo';
 import { DateFormat } from 'src/config/dateFormats';
+import { IntroStep, useIntroJourney } from 'src/components/moleculas/IntroJourney';
+import { useOnDidMount } from 'src/components/hooks/useOnDidMount';
+import { links } from 'src/links';
 
 import { tripInitialState, tripReducer } from './reducer';
 
@@ -18,6 +22,13 @@ export interface AddTripFormProps {
 }
 
 export function AddTripForm({ onClose }: AddTripFormProps) {
+    const [state, dispatch] = useReducer(tripReducer, tripInitialState);
+
+    const { introInProgress, continueIntroInProgress, nextStep } = useIntroJourney();
+    useOnDidMount(continueIntroInProgress);
+
+    const navigate = useNavigate();
+
     const queryClient = useQueryClient();
     const { mutate: create, isLoading, error } = useMutation(() => tripsService.createTripAsync({
         name: state.tripName,
@@ -32,15 +43,14 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
                 data
             ]);
 
-            onClose();
+            nextStep();
+            navigate(links.tripDetails(data.id));
         },
     });
 
-    const [state, dispatch] = useReducer(tripReducer, tripInitialState);
-
     return (
-        <Dialog open onClose={onClose}>
-            <DialogContent className={styles.form}>
+        <Dialog open onClose={!introInProgress ? onClose : undefined}>
+            <DialogContent data-intro-step={IntroStep.SaveTrip} className={styles.form}>
                 <TextField
                     label='Trip Name'
                     variant='standard'
@@ -51,7 +61,7 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
 
                 <DatePicker
                     label='Start Date'
-                    slotProps={{ textField: { variant: 'standard' } }}
+                    slotProps={{ textField: { variant: 'standard' }, dialog: { className: styles.formDateDialog } }}
                     format={DateFormat.Date}
                     value={state.startDate}
                     onChange={(date) => dispatch({ type: 'SET_START_DATE', payload: date })}
@@ -60,7 +70,7 @@ export function AddTripForm({ onClose }: AddTripFormProps) {
 
                 <DatePicker
                     label='End Date'
-                    slotProps={{ textField: { variant: 'standard' } }}
+                    slotProps={{ textField: { variant: 'standard' }, dialog: { className: styles.formDateDialog } }}
                     format={DateFormat.Date}
                     value={state.endDate}
                     onChange={(date) => dispatch({ type: 'SET_END_DATE', payload: date })}

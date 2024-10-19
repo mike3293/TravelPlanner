@@ -1,8 +1,9 @@
 import { Close } from '@mui/icons-material';
-import { Alert, Button, IconButton, TextField, Tooltip } from '@mui/material';
-import { ReactNode } from 'react';
+import { Alert, Button, IconButton, TextField, Tooltip, TooltipProps } from '@mui/material';
 import classNames from 'classnames';
+import { ReactNode } from 'react';
 
+import { IntroStep } from 'src/components/moleculas/IntroJourney';
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
 import { useActivityForm } from './useActivityForm';
@@ -51,6 +52,11 @@ export function ActivityForm({
                     }
                 } : {}],
             }}
+            slotProps={{
+                tooltip: {
+                    'data-intro-step': IntroStep.SaveTripActivity,
+                },
+            } as TooltipProps['slotProps']}
             title={(
                 <>
                     <IconButton

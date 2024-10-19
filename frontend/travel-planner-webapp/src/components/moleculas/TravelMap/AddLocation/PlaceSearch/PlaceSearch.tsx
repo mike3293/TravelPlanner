@@ -1,15 +1,16 @@
 import { Autocomplete, TextField } from '@mui/material';
 import { useCallback, useRef, useState } from 'react';
 import debounce from 'lodash/debounce';
+import L from 'leaflet';
 
 import { useMutation } from 'src/components/hooks/useMutation';
 import { geocodingService } from 'src/config/services';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
+import { PointWithAddress } from 'src/context/pointSelectionStore/types';
+import { useOnDidMount } from 'src/components/hooks/useOnDidMount';
+import { IntroStep } from 'src/components/moleculas/IntroJourney';
 
 import styles from './PlaceSearch.module.scss';
-import { PointWithAddress } from 'src/context/pointSelectionStore/types';
-import L from 'leaflet';
-import { useOnDidMount } from 'src/components/hooks/useOnDidMount';
 
 
 type Prediction = google.maps.places.AutocompletePrediction;
@@ -79,6 +80,7 @@ export function PlaceSearch({ requestedPoint, onSelect }: PlaceSearchProps) {
         <Autocomplete
             ref={ref}
             className={styles.search}
+            data-intro-step={IntroStep.SearchPlaceByAddress}
             options={predictions}
             getOptionLabel={p => p.description}
             inputValue={inputValue}

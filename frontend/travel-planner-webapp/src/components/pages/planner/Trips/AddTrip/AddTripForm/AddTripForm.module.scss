@@ -6,4 +6,8 @@
     &Button {
         margin-top: 8px;
     }
+
+    &DateDialog {
+        z-index: 3000 !important;
+    }
 }

@@ -15,7 +15,7 @@ export function useTravelDashboardResize() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleResize = useCallback(debounce(() => {
         mapResizeEventEmitter.publish();
-    }, 400), []);
+    }, 450), []);
 
     useOnDidUpdate(() => {
         handleResize();

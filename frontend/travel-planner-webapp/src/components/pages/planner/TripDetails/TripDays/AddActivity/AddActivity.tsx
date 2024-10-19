@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { usePointSelectionStoreShallow } from 'src/context/pointSelectionStore';
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
+import { IntroStep, useIntroJourney } from 'src/components/moleculas/IntroJourney';
 
 import { ActivityForm } from '../ActivityForm';
 
@@ -21,12 +22,18 @@ export function AddActivity({ className, onCreate }: AddActivityProps) {
 
     const [isAdding, setIsAdding] = useState(false);
 
+    const { nextStep } = useIntroJourney();
+
     return (
         <ActivityForm
             anchorEl={(
                 <Button
                     className={classNames(className, styles.add)}
-                    onClick={() => setIsAdding(true)}
+                    data-intro-step={IntroStep.AddTripActivity}
+                    onClick={() => {
+                        nextStep();
+                        setIsAdding(true);
+                    }}
                     disabled={isPointRequested}
                 >
                     <Add />

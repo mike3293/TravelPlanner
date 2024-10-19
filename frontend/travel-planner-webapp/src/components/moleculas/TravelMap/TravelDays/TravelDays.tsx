@@ -1,20 +1,14 @@
-import { Button } from '@mui/material';
 import L from 'leaflet';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Marker, useMap } from 'react-leaflet';
-import classNames from 'classnames';
 
+import { useMobile } from 'src/components/hooks/useMedia';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 import { usePrevious } from 'src/components/hooks/usePrevious';
-import { downloadFile } from 'src/components/utils/downloadFile';
-import { generateKmzAsync } from 'src/components/utils/generateKmz';
 import { getMarkerUrl } from 'src/components/utils/getMarkerUrl';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
-import { useMobile } from 'src/components/hooks/useMedia';
 
-import { IntroStep } from '../../IntroJourney';
-
-import styles from './TravelDays.module.scss';
+import { ExportKmz } from './ExportKmz';
 
 
 const getIcon = (iconUrl: string) => {
@@ -58,22 +52,14 @@ export function TravelDays() {
         })) ?? [];
     }, [trip]);
 
-    const exportKmz = useCallback(async () => {
-        const kmz = await generateKmzAsync(markerPointGroups);
-        downloadFile(`${trip?.name}.kmz`, kmz);
-    }, [markerPointGroups, trip?.name]);
-
     return (
         <>
-            <Button
-                className={classNames(styles.exportButton, isMobile && styles.exportButtonMobile)}
-                data-intro-step={IntroStep.ExportKmz}
-                variant='contained'
-                onClick={exportKmz}
-                disabled={markerPointGroups.length === 0}
-            >
-                Export KMZ
-            </Button>
+            {trip && (
+                <ExportKmz
+                    tripName={trip.name}
+                    markerPointGroups={markerPointGroups}
+                />
+            )}
             {markerPointGroups.flatMap(g => g.activities).map(({ activity, iconUrl }) => (
                 <Marker
                     key={activity.id}

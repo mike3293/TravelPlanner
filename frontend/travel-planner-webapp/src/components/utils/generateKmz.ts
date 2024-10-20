@@ -49,7 +49,7 @@ export const generateKmzAsync = async (markerGroups: MarkerGroup[]) => {
 
         // Set folder name to day's name and date
         const folderNameElement = xmlDoc.createElement('name');
-        folderNameElement.textContent = `${day.date.format(DateFormat.Date)}${day.name ? ` (${day.name})` : ''}`;
+        folderNameElement.textContent = `${day.date.format(DateFormat.DateWithWeekDay)}${day.name ? ` (${day.name})` : ''}`;
         folderElement.appendChild(folderNameElement);
 
         // Append each activity to the day's folder

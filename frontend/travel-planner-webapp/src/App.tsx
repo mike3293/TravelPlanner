@@ -13,6 +13,8 @@ import { Register, LogIn } from './components/pages/auth';
 
 
 moment.tz.setDefault('Atlantic/Reykjavik');
+moment.updateLocale('en', { week: { dow: 1 } });
+
 
 const queryClient = new QueryClient();
 

@@ -53,7 +53,7 @@ export function PlaceSearch({ requestedPoint, onSelect }: PlaceSearchProps) {
         setInputValue(value);
     };
 
-    const handleSelection = async (_: unknown, value: Prediction | null) => {
+    const handleSelection = async (e: React.SyntheticEvent, value: Prediction | null) => {
         setSelectedOption(value);
         if (!value) {
             setPredictions([]);
@@ -70,6 +70,8 @@ export function PlaceSearch({ requestedPoint, onSelect }: PlaceSearchProps) {
         }
 
         onSelect({ latitude: location.lat(), longitude: location.lng(), address: value.description });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setTimeout(() => (document.activeElement as any)?.blur());
     };
 
     useOnDidMount(() => {

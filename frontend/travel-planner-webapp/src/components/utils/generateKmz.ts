@@ -65,6 +65,11 @@ export const generateKmzAsync = async (markerGroups: MarkerGroup[]) => {
             nameElement.textContent = marker.activity.name;
             placemarkElement.appendChild(nameElement);
 
+            // Description
+            const descriptionElement = xmlDoc.createElement('description');
+            descriptionElement.textContent = marker.activity.description;
+            placemarkElement.appendChild(descriptionElement);
+
             // Point
             const pointElement = xmlDoc.createElement('Point');
             const coordinatesElement = xmlDoc.createElement('coordinates');

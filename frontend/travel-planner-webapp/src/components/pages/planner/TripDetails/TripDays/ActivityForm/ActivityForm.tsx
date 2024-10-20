@@ -67,10 +67,23 @@ export function ActivityForm({
                     </IconButton>
                     <TextField
                         variant='standard'
-                        label='Name'
+                        placeholder='Name'
                         tabIndex={-1}
                         value={state.name}
                         onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
+                        onKeyDown={(e) => {
+                            if (state.address && e.key === 'Enter') {
+                                handleSave();
+                            }
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        variant='standard'
+                        placeholder='Description'
+                        tabIndex={-1}
+                        value={state.description}
+                        onChange={(e) => dispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })}
                         onKeyDown={(e) => {
                             if (state.address && e.key === 'Enter') {
                                 handleSave();

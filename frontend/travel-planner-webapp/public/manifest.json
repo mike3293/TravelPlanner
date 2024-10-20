@@ -1,4 +1,5 @@
 {
+    "id": "__BUILD_VERSION__",
     "short_name": "TravelPlanner",
     "name": "TravelPlanner",
     "icons": [

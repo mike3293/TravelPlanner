@@ -40,6 +40,11 @@ jobs:
           echo "FRONTEND_VERSION=${VERSION}" >> $GITHUB_ENV
           echo "FRONTEND_VERSION=${VERSION}" >> $GITHUB_OUTPUT
 
+      - name: Replace variables in .env
+        run: |
+          find . -name "*.env" -print0 | xargs -0 sed -i 's|__GEOCODER_API_KEY__|${{ secrets.GEOCODER_API_KEY }}|g'
+          find . -name "*.env" -print0 | xargs -0 sed -i 's|__API_URL__|${{ vars.API_URL }}|g'
+
       - name: Log in to Docker Hub
         if: env.FRONTEND_CHANGED == 'true'
         uses: docker/login-action@v1

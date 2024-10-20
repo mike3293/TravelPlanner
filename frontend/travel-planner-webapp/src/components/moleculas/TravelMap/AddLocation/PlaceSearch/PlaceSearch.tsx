@@ -2,6 +2,7 @@ import { Autocomplete, TextField } from '@mui/material';
 import { useCallback, useRef, useState } from 'react';
 import debounce from 'lodash/debounce';
 import L from 'leaflet';
+import { useMap } from 'react-leaflet';
 
 import { useMutation } from 'src/components/hooks/useMutation';
 import { geocodingService } from 'src/config/services';
@@ -21,6 +22,8 @@ export interface PlaceSearchProps {
 }
 
 export function PlaceSearch({ requestedPoint, onSelect }: PlaceSearchProps) {
+    const map = useMap();
+
     const ref = useRef<HTMLElement>(null);
     const [inputValue, setInputValue] = useState('');
     const [selectedOption, setSelectedOption] = useState<Prediction | null>(null);
@@ -69,7 +72,9 @@ export function PlaceSearch({ requestedPoint, onSelect }: PlaceSearchProps) {
             throw new Error('Location is empty');
         }
 
-        onSelect({ latitude: location.lat(), longitude: location.lng(), address: value.description });
+        const point = { latitude: location.lat(), longitude: location.lng(), address: value.description };
+        onSelect(point);
+        map.panTo([point.latitude, point.longitude]);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setTimeout(() => (document.activeElement as any)?.blur());
     };

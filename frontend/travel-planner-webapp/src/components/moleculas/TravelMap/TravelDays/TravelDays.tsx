@@ -32,7 +32,7 @@ export function TravelDays() {
         if (!trip || trip.id === prevTripId) {
             return;
         }
-        const firstActivity = trip.days.find(d => d.activities.length !== 0)?.activities[0];
+        const firstActivity = trip.accommodations[0] ?? trip.days.find(d => d.activities.length !== 0)?.activities[0];
         if (!firstActivity) {
             return;
         }

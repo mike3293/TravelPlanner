@@ -13,4 +13,6 @@ public class Trip
     public required DateOnly EndDate { get; set; }
 
     public required ICollection<TripDay> Days { get; set; }
+
+    public required ICollection<TripDayActivity> Accommodations { get; set; }
 }

@@ -1,13 +1,9 @@
-import { Moment } from 'moment';
-
 import { TripInfo } from './TripInfo';
 import { TripDay } from './TripDay';
+import { TripDayActivity } from './TripDayActivity';
 
 
 export interface Trip extends TripInfo {
-    readonly id: string;
-    readonly name: string;
-    readonly startDate: Moment;
-    readonly endDate: Moment;
     readonly days: TripDay[];
+    readonly accommodations: TripDayActivity[];
 }

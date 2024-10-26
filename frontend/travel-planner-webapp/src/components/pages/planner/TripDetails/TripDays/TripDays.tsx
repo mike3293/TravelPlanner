@@ -1,13 +1,14 @@
 import { DragDropContext, Draggable, DraggableProvided, Droppable, DroppableProvided, DropResult } from 'react-beautiful-dnd';
 import classNames from 'classnames';
+import { ReactNode } from 'react';
 
 import { TripDay } from 'src/services/trips/TripDay';
 import { getUniqueId } from 'src/components/utils/getUniqueId';
 import { useMobile } from 'src/components/hooks/useMedia';
 
-import { Activity } from './Activity';
+import { Activity } from '../components/Activity';
 import { TripDayContainer } from './TripDayContainer';
-import { AddActivity } from './AddActivity';
+import { AddActivity } from '../components/AddActivity';
 
 import styles from './TripDays.module.scss';
 
@@ -50,9 +51,10 @@ const move = (
 export interface TripDaysProps {
     days: TripDay[];
     onDaysChange: (days: TripDay[]) => void;
+    children?: ReactNode;
 }
 
-export function TripDays({ days, onDaysChange }: TripDaysProps) {
+export function TripDays({ days, onDaysChange, children }: TripDaysProps) {
     const isMobile = useMobile();
 
     const onDragEnd = (result: DropResult) => {
@@ -82,6 +84,7 @@ export function TripDays({ days, onDaysChange }: TripDaysProps) {
 
     return (
         <div className={classNames(styles.days, isMobile && styles.daysMobile)}>
+            {children}
             <DragDropContext onDragEnd={onDragEnd}>
                 {days.map((day, dInd) => (
                     <Droppable key={day.id} droppableId={day.id}>
@@ -123,7 +126,6 @@ export function TripDays({ days, onDaysChange }: TripDaysProps) {
                                     ))}
                                     {provided.placeholder}
                                     <AddActivity
-                                        className={styles.daysAddActivity}
                                         onCreate={(activity) => {
                                             const newState = [...days];
                                             newState.find(d => d.id === day.id)!.activities.push({ ...activity, id: getUniqueId() });

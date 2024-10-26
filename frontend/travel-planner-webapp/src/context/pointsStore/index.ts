@@ -8,6 +8,7 @@ export const usePointsStore = create<IPointsStore>((set, get) => ({
     trip: null,
     setTrip: (trip) => set({ trip }),
     setDays: (days) => set({ trip: { ...get().trip!, days } }),
+    setAccommodations: (accommodations) => set({ trip: { ...get().trip!, accommodations } }),
 }));
 
 export function usePointsStoreShallow<U>(selector: (store: IPointsStore) => U): U {

@@ -5,8 +5,9 @@ import { Marker, useMap } from 'react-leaflet';
 import { useMobile } from 'src/components/hooks/useMedia';
 import useOnDidUpdate from 'src/components/hooks/useOnDidUpdate';
 import { usePrevious } from 'src/components/hooks/usePrevious';
-import { getMarkerUrl } from 'src/components/utils/getMarkerUrl';
+import { getAccomodationMarkerUrl, getMarkerUrl } from 'src/components/utils/getMarkerUrl';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
+import { DateFormat } from 'src/config/dateFormats';
 
 import { ExportKmz } from './ExportKmz';
 
@@ -43,13 +44,24 @@ export function TravelDays() {
     }, [trip]);
 
     const markerPointGroups = useMemo(() => {
-        return trip?.days.map((d, dInd) => ({
-            day: d,
-            activities: d.activities.map((a, aInd) => ({
-                activity: a,
-                iconUrl: getMarkerUrl(dInd, aInd),
+        if (!trip) return [];
+
+        return [
+            ...trip.accommodations.map((a) => ({
+                title: 'Accommodations',
+                activities: [{
+                    activity: a,
+                    iconUrl: getAccomodationMarkerUrl(),
+                }],
             })),
-        })) ?? [];
+            ...trip.days.map((d, dInd) => ({
+                title: `${d.date.format(DateFormat.DateWithWeekDay)}${d.name ? ` (${d.name})` : ''}`,
+                activities: d.activities.map((a, aInd) => ({
+                    activity: a,
+                    iconUrl: getMarkerUrl(dInd, aInd),
+                })),
+            })),
+        ];
     }, [trip]);
 
     return (

@@ -22,6 +22,7 @@ public static class TripsCreator
             StartDate = trip.StartDate,
             EndDate = trip.EndDate,
             Days = trip.Days.Select(CreateFrom).ToList(),
+            Accommodations = trip.Accommodations.Select(CreateFrom).ToList(),
         };
     }
 

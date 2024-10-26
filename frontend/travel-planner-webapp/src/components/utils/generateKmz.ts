@@ -1,14 +1,12 @@
 import JSZip from 'jszip';
 
 import { TripDayActivity } from 'src/services/trips/TripDayActivity';
-import { TripDay } from 'src/services/trips/TripDay';
-import { DateFormat } from 'src/config/dateFormats';
 
 import { getMarkerNameWithFolder } from './getMarkerUrl';
 
 
 export interface MarkerGroup {
-    day: TripDay;
+    title: string;
     activities: Marker[];
 }
 
@@ -43,13 +41,13 @@ export const generateKmzAsync = async (markerGroups: MarkerGroup[]) => {
     const documentElement = xmlDoc.createElement('Document');
     kmlElement.appendChild(documentElement);
 
-    markerGroups.forEach(({ day, activities }) => {
+    markerGroups.forEach(({ title, activities }) => {
         // Add a folder for each day
         const folderElement = xmlDoc.createElement('Folder');
 
         // Set folder name to day's name and date
         const folderNameElement = xmlDoc.createElement('name');
-        folderNameElement.textContent = `${day.date.format(DateFormat.DateWithWeekDay)}${day.name ? ` (${day.name})` : ''}`;
+        folderNameElement.textContent = title;
         folderElement.appendChild(folderNameElement);
 
         // Append each activity to the day's folder

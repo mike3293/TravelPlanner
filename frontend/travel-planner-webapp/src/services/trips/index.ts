@@ -3,6 +3,7 @@ import { TripInfo } from './TripInfo';
 import { TripUpdate } from './TripUpdate';
 import { Trip } from './Trip';
 import { TripDay } from './TripDay';
+import { TripDayActivity } from './TripDayActivity';
 
 
 export class TripsService extends ServiceWithAuthBase {
@@ -24,5 +25,9 @@ export class TripsService extends ServiceWithAuthBase {
 
     public async updateTripDaysAsync(id: string, days: TripDay[]) {
         return this.put<Trip>(`trips/${id}/days`, days, createDates);
+    }
+
+    public async updateTripAccommodationsAsync(id: string, accommodations: TripDayActivity[]) {
+        return this.put<Trip>(`trips/${id}/accommodations`, accommodations, createDates);
     }
 }

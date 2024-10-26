@@ -13,9 +13,11 @@ import { DateFormat } from 'src/config/dateFormats';
 import { tripsService } from 'src/config/services';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
 import { TripDay } from 'src/services/trips/TripDay';
+import { TripDayActivity } from 'src/services/trips/TripDayActivity';
 
 import { EditTrip } from './EditTrip';
 import { TripDays } from './TripDays';
+import { TripAccommodations } from './TripAccommodations';
 
 import styles from './TripDetails.module.scss';
 
@@ -31,7 +33,7 @@ const renderDateField = (label: string, date: Moment) => (
 export function TripDetails() {
     const { tripId } = useParams();
 
-    const [trip, onDaysChange, onTripChange] = usePointsStoreShallow(s => [s.trip, s.setDays, s.setTrip]);
+    const [trip, onDaysChange, onAccommodationsChange, onTripChange] = usePointsStoreShallow(s => [s.trip, s.setDays, s.setAccommodations, s.setTrip]);
 
     const { data, error, isFetching } = useQuery(
         ['trip', tripId],
@@ -43,12 +45,23 @@ export function TripDetails() {
         },
     );
 
-    const { mutate: updateDays, isLoading: isUpdating } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
+    const { mutate: updateDays, isLoading: isDaysUpdating } = useMutation((days: TripDay[]) => tripsService.updateTripDaysAsync(tripId!, days));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const updateDaysDebounced = useCallback(throttle((days: TripDay[]) => updateDays(days), 3000), []);
+
+    const { mutate: updateAccommodations, isLoading: isAccommodationsUpdating } = useMutation((accommodations: TripDayActivity[]) => tripsService.updateTripAccommodationsAsync(tripId!, accommodations));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const updateAccommodationsDebounced = useCallback(throttle((accommodations: TripDayActivity[]) => updateAccommodations(accommodations), 3000), []);
+
     useOnDidUpdate(() => {
-        if (trip?.days && trip.days !== data?.days) {
+        if (!trip) return;
+
+        if (trip.days !== data?.days) {
             updateDaysDebounced(trip.days);
+        }
+
+        if (trip.accommodations !== data?.accommodations) {
+            updateAccommodationsDebounced(trip.accommodations);
         }
     }, [trip]);
 
@@ -64,7 +77,7 @@ export function TripDetails() {
                     <Typography variant='h4'>{trip.name}</Typography>
                     <Fade
                         className={styles.tripHeaderTitleIcon}
-                        in={isUpdating}
+                        in={isAccommodationsUpdating || isDaysUpdating}
                         timeout={{ exit: 5000 }}
                     >
                         <Save color='primary' />
@@ -79,7 +92,12 @@ export function TripDetails() {
             <TripDays
                 days={trip.days}
                 onDaysChange={onDaysChange}
-            />
+            >
+                <TripAccommodations
+                    accommodations={trip.accommodations}
+                    onChange={onAccommodationsChange}
+                />
+            </TripDays>
         </div>
     );
 };

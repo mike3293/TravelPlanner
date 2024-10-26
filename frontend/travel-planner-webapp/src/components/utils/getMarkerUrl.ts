@@ -1,12 +1,16 @@
 import { getColorByIndex } from './markerColors';
 
 
-export const getMarkerBaseUrl = (colorIndex: number, fileName: string) => `${window.location.origin}/images/markers/${getColorByIndex(colorIndex)}/${fileName}.png`;
+const getMarkerBaseUrl = (path: string) => `${window.location.origin}/images/markers/${path}.png`;
 
-export const getEmptyMarkerUrl = (colorIndex: number) => getMarkerBaseUrl(colorIndex, 'empty');
+const getMarkerWithColorUrl = (colorIndex: number, fileName: string) => getMarkerBaseUrl(`${getColorByIndex(colorIndex)}/${fileName}`);
+
+export const getEmptyMarkerUrl = (colorIndex: number) => getMarkerWithColorUrl(colorIndex, 'empty');
+
+export const getAccomodationMarkerUrl = () => getMarkerBaseUrl('red/bed');
 
 export const getMarkerUrl = (colorIndex: number, index: number) => {
-    return index < 98 ? getMarkerBaseUrl(colorIndex, `number-${index + 1}`) : getEmptyMarkerUrl(colorIndex);
+    return index < 98 ? getMarkerWithColorUrl(colorIndex, `number-${index + 1}`) : getEmptyMarkerUrl(colorIndex);
 };
 
 

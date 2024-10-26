@@ -1,0 +1,1 @@
+export { TripAccommodations } from './TripAccommodations';

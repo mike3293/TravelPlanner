@@ -14,10 +14,11 @@ import styles from './AddActivity.module.scss';
 
 export interface AddActivityProps {
     className?: string;
+    title?: string;
     onCreate: (activity: TripDayActivity) => void;
 }
 
-export function AddActivity({ className, onCreate }: AddActivityProps) {
+export function AddActivity({ className, title = 'Add activity', onCreate }: AddActivityProps) {
     const [isPointRequested] = usePointSelectionStoreShallow(s => [s.isPointRequested]);
 
     const [isAdding, setIsAdding] = useState(false);
@@ -37,7 +38,7 @@ export function AddActivity({ className, onCreate }: AddActivityProps) {
                     disabled={isPointRequested}
                 >
                     <Add />
-                    Add activity
+                    {title}
                 </Button>
             )}
             onSubmit={onCreate}

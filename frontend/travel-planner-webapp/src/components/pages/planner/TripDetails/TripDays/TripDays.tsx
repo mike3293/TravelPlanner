@@ -86,7 +86,7 @@ export function TripDays({ days, onDaysChange, children }: TripDaysProps) {
         <div className={classNames(styles.days, isMobile && styles.daysMobile)}>
             {children}
             <DragDropContext onDragEnd={onDragEnd}>
-                {days.map((day, dInd) => (
+                {days.map((day, dayIndex) => (
                     <Droppable key={day.id} droppableId={day.id}>
                         {(provided: DroppableProvided) => (
                             <div
@@ -94,7 +94,7 @@ export function TripDays({ days, onDaysChange, children }: TripDaysProps) {
                                 className={styles.daysDroppable}
                                 {...provided.droppableProps}
                             >
-                                <TripDayContainer day={day} index={dInd}>
+                                <TripDayContainer day={day} index={dayIndex}>
                                     {day.activities.map((item, index) => (
                                         <Draggable
                                             key={item.id}
@@ -109,6 +109,7 @@ export function TripDays({ days, onDaysChange, children }: TripDaysProps) {
                                                 >
                                                     <Activity
                                                         activity={item}
+                                                        indexes={{ dayIndex, index }}
                                                         onEdit={(activity) => {
                                                             const newState = [...days];
                                                             newState.find(d => d.id === day.id)!.activities[index] = activity;

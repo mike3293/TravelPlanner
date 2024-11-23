@@ -39,3 +39,7 @@ input:-webkit-autofill:active {
     -webkit-box-shadow: initial !important;
     -webkit-text-fill-color: #000 !important;
 }
+
+.leaflet-popup-content p {
+    all: unset;
+}

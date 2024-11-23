@@ -10,6 +10,7 @@ import { usePointsStoreShallow } from 'src/context/pointsStore';
 import { DateFormat } from 'src/config/dateFormats';
 
 import { ExportKmz } from './ExportKmz';
+import { ActivityPopup } from './ActivityPopup';
 
 
 const getIcon = (iconUrl: string) => {
@@ -75,7 +76,9 @@ export function TravelDays() {
                     key={activity.id}
                     position={[activity.latitude, activity.longitude]}
                     icon={getIcon(iconUrl)}
-                />
+                >
+                    <ActivityPopup activity={activity} />
+                </Marker>
             ))}
         </>
     );

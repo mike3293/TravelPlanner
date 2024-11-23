@@ -8,6 +8,7 @@ import { usePrevious } from 'src/components/hooks/usePrevious';
 import { getAccomodationMarkerUrl, getMarkerUrl } from 'src/components/utils/getMarkerUrl';
 import { usePointsStoreShallow } from 'src/context/pointsStore';
 import { DateFormat } from 'src/config/dateFormats';
+import { MarkerGroup } from 'src/components/utils/generateKmz';
 
 import { ExportKmz } from './ExportKmz';
 import { ActivityPopup } from './ActivityPopup';
@@ -48,13 +49,13 @@ export function TravelDays() {
         if (!trip) return [];
 
         return [
-            ...trip.accommodations.map((a) => ({
+            trip.accommodations.length > 0 && {
                 title: 'Accommodations',
-                activities: [{
+                activities: trip.accommodations.map((a) => ({
                     activity: a,
                     iconUrl: getAccomodationMarkerUrl(),
-                }],
-            })),
+                })),
+            },
             ...trip.days.map((d, dInd) => ({
                 title: `${d.date.format(DateFormat.DateWithWeekDay)}${d.name ? ` (${d.name})` : ''}`,
                 activities: d.activities.map((a, aInd) => ({
@@ -62,7 +63,7 @@ export function TravelDays() {
                     iconUrl: getMarkerUrl(dInd, aInd),
                 })),
             })),
-        ];
+        ].filter(Boolean) as MarkerGroup[];
     }, [trip]);
 
     return (
